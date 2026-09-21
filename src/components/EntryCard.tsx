@@ -18,6 +18,12 @@ export function EntryCard({ entry, onOpen }: EntryCardProps) {
       {entry.hidden && <span className="entry-card-hidden-tag">Hidden</span>}
       {entry.kind === 'Image' && entry.fileUrl ? (
         <img className="entry-card-image" src={entry.fileUrl} alt={entry.title} />
+      ) : entry.kind === 'Video' && entry.thumbnailUrl ? (
+        <img className="entry-card-image" src={entry.thumbnailUrl} alt={entry.title} />
+      ) : entry.kind === 'Video' || entry.kind === 'Sound' ? (
+        <div className="entry-card-icon-header">
+          <KindIcon kind={entry.kind} size={40} />
+        </div>
       ) : entry.imageColor ? (
         <div className="entry-card-image" style={{ background: entry.imageColor }} />
       ) : (

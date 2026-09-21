@@ -56,6 +56,16 @@
   display: block;
 }
 
+.entry-card-icon-header {
+  height: 120px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-pill-bg);
+  color: var(--color-maroon-soft);
+}
+
 .entry-card-excerpt {
   font-size: 13px;
   line-height: 1.4;

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { type Entry, type Kind } from '../data/types';
 import { mergeThreads, mergeSources } from '../data/entries';
 import { detectKindFromFile, MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from '../data/detectKind';
+import { generateVideoThumbnail } from '../data/videoThumbnail';
 import { KindIcon } from '../components/kindIcon';
 import { BackIcon } from '../components/customIcons';
 import { useEntries } from '../hooks/useEntries';
@@ -72,6 +73,9 @@ export function Offer({
 
     setSubmitting(true);
 
+    const thumbnailUrl =
+      derivedKind === 'Video' && file ? await generateVideoThumbnail(file) : null;
+
     const result = await addEntry(
       {
         kind: derivedKind,
@@ -89,6 +93,7 @@ export function Offer({
               : note.trim() || (file ? `Attached: ${file.name}` : 'No description was provided.'),
         link: derivedKind === 'Link' ? link.trim() : undefined,
         fileName: file?.name,
+        thumbnailUrl: thumbnailUrl ?? undefined,
       },
       file,
     );

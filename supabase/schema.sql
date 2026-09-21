@@ -27,12 +27,16 @@ create table if not exists entries (
   link text,
   file_url text,
   file_name text,
+  thumbnail_url text,
   x double precision not null,
   y double precision not null,
   report_count integer not null default 0,
   hidden boolean not null default false,
   created_at timestamptz not null default now()
 );
+
+-- For a database that already had this table before thumbnail_url existed.
+alter table entries add column if not exists thumbnail_url text;
 
 create table if not exists reports (
   id uuid primary key default gen_random_uuid(),

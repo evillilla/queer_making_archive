@@ -42,7 +42,7 @@ function EntryMedia({ entry }: { entry: Entry }) {
   }
 
   if (entry.kind === 'Video' && entry.fileUrl) {
-    return <video className="entry-modal-video" controls src={entry.fileUrl} />;
+    return <video className="entry-modal-video" controls src={entry.fileUrl} poster={entry.thumbnailUrl} />;
   }
 
   if (entry.kind === 'PDF' && entry.fileUrl) {

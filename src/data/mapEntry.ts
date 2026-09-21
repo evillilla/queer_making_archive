@@ -14,6 +14,7 @@ export interface EntryRow {
   link: string | null;
   file_url: string | null;
   file_name: string | null;
+  thumbnail_url: string | null;
   x: number;
   y: number;
   report_count: number;
@@ -34,6 +35,7 @@ export function rowToEntry(row: EntryRow): Entry {
     link: row.link ?? undefined,
     fileUrl: row.file_url ?? undefined,
     fileName: row.file_name ?? undefined,
+    thumbnailUrl: row.thumbnail_url ?? undefined,
     x: row.x,
     y: row.y,
     reportCount: row.report_count,
@@ -54,6 +56,7 @@ export function entryToRow(entry: Omit<Entry, 'id'>) {
     link: entry.link ?? null,
     file_url: entry.fileUrl ?? null,
     file_name: entry.fileName ?? null,
+    thumbnail_url: entry.thumbnailUrl ?? null,
     x: entry.x,
     y: entry.y,
   };

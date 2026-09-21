@@ -19,6 +19,7 @@ export interface Entry {
   imageColor?: string;
   fileUrl?: string;
   fileName?: string;
+  thumbnailUrl?: string;
   x: number;
   y: number;
   reportCount?: number;
