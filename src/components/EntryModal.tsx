@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ExternalLink, Flag } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import type { Entry } from '../data/types';
 import { KindIcon } from './kindIcon';
 import { PixelX } from './PixelX';
-import { DownloadIcon, TrashIcon } from './customIcons';
+import { DownloadIcon, TrashIcon, FlagIcon } from './customIcons';
 import './EntryModal.css';
 
 interface EntryModalProps {
@@ -162,7 +162,7 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
               </div>
             ) : (
               <button type="button" className="entry-modal-report-link" onClick={() => setShowReportForm(true)}>
-                <Flag size={13} />
+                <FlagIcon size={13} />
                 Report this offering
               </button>
             )}

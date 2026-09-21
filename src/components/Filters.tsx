@@ -1,5 +1,12 @@
 import { KINDS, type Kind } from '../data/types';
+import { PlaceIcon } from './customIcons';
 import './Filters.css';
+
+// Icons for known threads — threads are otherwise free-form/user-added, so
+// most won't have one yet. Add more here as icons for them show up.
+const THREAD_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
+  place: PlaceIcon,
+};
 
 export interface FilterState {
   kind: Kind | 'All';
@@ -68,15 +75,19 @@ export function Filters({ value, onChange, threads, sources, kindCounts, total }
           <Pill active={value.thread === 'All'} onClick={() => onChange({ ...value, thread: 'All' })}>
             All
           </Pill>
-          {threads.map((thread) => (
-            <Pill
-              key={thread}
-              active={value.thread === thread}
-              onClick={() => onChange({ ...value, thread })}
-            >
-              {thread}
-            </Pill>
-          ))}
+          {threads.map((thread) => {
+            const ThreadIcon = THREAD_ICONS[thread.toLowerCase()];
+            return (
+              <Pill
+                key={thread}
+                active={value.thread === thread}
+                onClick={() => onChange({ ...value, thread })}
+              >
+                {ThreadIcon && <ThreadIcon size={12} />}
+                {thread}
+              </Pill>
+            );
+          })}
         </div>
       </div>
 
