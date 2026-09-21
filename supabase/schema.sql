@@ -115,7 +115,7 @@ create or replace function verify_admin_passcode(p_passcode text)
 returns boolean
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $fn$
 declare
   stored_hash text;
