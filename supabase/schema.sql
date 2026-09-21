@@ -74,9 +74,11 @@ create policy "public insert entries" on entries
 -- Storage: anyone can upload/read offerings; nothing can delete objects
 -- directly (the admin delete only removes the database row — an orphaned
 -- file left in storage is a fine trade-off for keeping this simple).
-insert into storage.buckets (id, name, public)
-  values ('offerings', 'offerings', true)
-  on conflict (id) do nothing;
+-- file_size_limit is set to Supabase's free-tier ceiling (50MB) — raise it
+-- here if this project is on a paid plan with a higher limit.
+insert into storage.buckets (id, name, public, file_size_limit)
+  values ('offerings', 'offerings', true, 52428800)
+  on conflict (id) do update set file_size_limit = excluded.file_size_limit;
 
 drop policy if exists "public read offerings" on storage.objects;
 create policy "public read offerings" on storage.objects

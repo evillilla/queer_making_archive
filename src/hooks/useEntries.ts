@@ -6,6 +6,8 @@ import type { Entry } from '../data/types';
 
 export type NewEntry = Omit<Entry, 'id' | 'x' | 'y' | 'fileUrl' | 'reportCount' | 'hidden'>;
 
+export type AddEntryResult = { ok: true; entry: Entry } | { ok: false; error: string };
+
 export function useEntries(adminPasscode: string | null) {
   const [entries, setEntries] = useState<Entry[]>(isSupabaseConfigured ? [] : seedEntries);
   const [loading, setLoading] = useState(isSupabaseConfigured);
@@ -30,16 +32,29 @@ export function useEntries(adminPasscode: string | null) {
     fetchEntries(adminPasscode);
   }, [fetchEntries, adminPasscode]);
 
-  const addEntry = useCallback(async (entry: NewEntry, file: File | null) => {
-    if (!supabase) return null;
+  const addEntry = useCallback(async (entry: NewEntry, file: File | null): Promise<AddEntryResult> => {
+    if (!supabase) {
+      return {
+        ok: false,
+        error: isSupabaseConfigured
+          ? 'Could not reach the server — check your connection and try again.'
+          : 'Backend not configured for this deployment (missing Supabase environment variables).',
+      };
+    }
     try {
       let fileUrl: string | undefined;
       if (file) {
         const path = `${crypto.randomUUID()}-${file.name}`;
         const { error: uploadError } = await supabase.storage.from('offerings').upload(path, file);
-        if (!uploadError) {
-          fileUrl = supabase.storage.from('offerings').getPublicUrl(path).data.publicUrl;
+        if (uploadError) {
+          console.error('File upload failed:', uploadError);
+          const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+          return {
+            ok: false,
+            error: `Couldn't upload "${file.name}" (${sizeMb} MB): ${uploadError.message}. Large files may exceed this project's upload size limit.`,
+          };
         }
+        fileUrl = supabase.storage.from('offerings').getPublicUrl(path).data.publicUrl;
       }
 
       const row = entryToRow({
@@ -50,13 +65,17 @@ export function useEntries(adminPasscode: string | null) {
       });
 
       const { data, error } = await supabase.from('entries').insert(row).select().single();
-      if (error || !data) return null;
+      if (error || !data) {
+        console.error('Insert entry failed:', error);
+        return { ok: false, error: 'Something went wrong saving this — please try again.' };
+      }
 
       const newEntry = rowToEntry(data as EntryRow);
       setEntries((prev) => [...prev, newEntry]);
-      return newEntry;
-    } catch {
-      return null;
+      return { ok: true, entry: newEntry };
+    } catch (err) {
+      console.error('addEntry failed:', err);
+      return { ok: false, error: 'Something went wrong submitting this — please try again.' };
     }
   }, []);
 

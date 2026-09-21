@@ -1,8 +1,8 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { type Entry, type Kind } from '../data/types';
 import { mergeThreads, mergeSources } from '../data/entries';
-import { detectKindFromFile } from '../data/detectKind';
+import { detectKindFromFile, MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from '../data/detectKind';
 import { KindIcon } from '../components/kindIcon';
 import { BackIcon } from '../components/customIcons';
 import { useEntries } from '../hooks/useEntries';
@@ -35,6 +35,19 @@ export function Offer({
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (chosen: File | null) => {
+    if (chosen && chosen.size > MAX_UPLOAD_BYTES) {
+      const sizeMb = (chosen.size / (1024 * 1024)).toFixed(1);
+      setError(`"${chosen.name}" is ${sizeMb} MB, which is over the ${MAX_UPLOAD_LABEL} upload limit. Try a smaller or compressed file.`);
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+    setError('');
+    setFile(chosen);
+  };
 
   const derivedKind: Kind | null = file
     ? detectKindFromFile(file)
@@ -81,8 +94,8 @@ export function Offer({
     );
 
     setSubmitting(false);
-    if (!result) {
-      setError('Something went wrong submitting this — please try again.');
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
     navigate('/');
@@ -251,11 +264,13 @@ export function Offer({
         <label className="offer-field">
           <span>Attach a file</span>
           <input
+            ref={fileInputRef}
             type="file"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
           />
           <span className="offer-field-hint">
-            Image, sound, video, PDF, font — anything. It'll be tagged automatically.
+            Image, sound, video, PDF, font — anything, up to {MAX_UPLOAD_LABEL} per file. It'll
+            be tagged automatically.
           </span>
         </label>
 
