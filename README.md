@@ -14,15 +14,30 @@ Embed a Site element).
 
 ## Content and data
 
-Seed entries live in `src/data/entries.ts` — replace them with the real archive content
-whenever it's available. Visitor submissions are stored in the browser's `localStorage`
-(`src/hooks/useEntries.ts`), so **they persist only for that visitor, in that browser** — there's
-no shared backend. To make submissions visible to everyone, this needs a real backend (a
-small serverless API + database, or Wix Data/Collections via Velo if this ends up embedded
-through Velo rather than a plain iframe).
+Entries are stored in Supabase (Postgres + file storage) so submissions, reports, and
+deletions are shared and persistent across every visitor — not just the browser that made
+them. Seed/demo content that ships with the repo lives in `src/data/entries.ts`, but it's only
+used as a local fallback when Supabase isn't configured (see below); once Supabase is wired
+up, everything comes from the database instead.
 
-Similarly, the "file" inputs in the submission form only capture a filename for display —
-there's no file storage wired up yet.
+- Anyone can submit an offering (image, sound, video, PDF, font, writing, or a link) — no
+  account needed. Uploaded files go to a public Supabase Storage bucket.
+- Anyone can report an offering, with an optional reason. After 3 reports it's automatically
+  hidden from public view (still visible to the admin, marked "Hidden").
+- The site owner can log in as admin (bottom-left "Admin" button) and delete any offering.
+  Admin login is a real Supabase Auth user, not a password baked into the code.
+
+### Backend setup (Supabase)
+
+1. Create a free project at [supabase.com](https://supabase.com).
+2. In the SQL Editor, run `supabase/schema.sql` from this repo (safe to re-run).
+3. In Authentication → Users, add one user (your email + a password) — that's the admin login.
+4. In Project Settings → API, copy the **Project URL** and **anon/publishable key** into a
+   `.env` file (copy `.env.example` and fill it in). Never use the *secret*/service-role key
+   here — it must never appear in client-side code.
+
+Without a `.env`, the app falls back to read-only demo content from `src/data/entries.ts` —
+submissions, reports, and admin login are no-ops in that mode.
 
 ## Develop
 

@@ -3,3 +3,13 @@
   flex-direction: column;
   height: 100vh;
 }
+
+.archive-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  color: var(--color-maroon-soft);
+  margin: 0;
+}

@@ -9,16 +9,6 @@ import { useEntries } from '../hooks/useEntries';
 import './Offer.css';
 
 const NEW_THREAD = '__new__';
-const MAX_INLINE_IMAGE_BYTES = 2_000_000;
-
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
-}
 
 export function Offer({
   entries,
@@ -64,38 +54,33 @@ export function Offer({
     }
 
     setSubmitting(true);
-    let imageUrl: string | undefined;
-    if (file && derivedKind === 'Image' && file.size < MAX_INLINE_IMAGE_BYTES) {
-      try {
-        imageUrl = await readFileAsDataUrl(file);
-      } catch {
-        // fall through without a preview if reading fails
-      }
+
+    const result = await addEntry(
+      {
+        kind: derivedKind,
+        thread,
+        source,
+        title: title.trim(),
+        offeredBy: offeredBy.trim() || undefined,
+        tagline: note.trim() || undefined,
+        excerpt: (note.trim() || text.trim() || file?.name || 'A new offering.').slice(0, 160),
+        body:
+          derivedKind === 'Link'
+            ? link.trim()
+            : derivedKind === 'Writing'
+              ? text.trim()
+              : note.trim() || (file ? `Attached: ${file.name}` : 'No description was provided.'),
+        link: derivedKind === 'Link' ? link.trim() : undefined,
+        fileName: file?.name,
+      },
+      file,
+    );
+
+    setSubmitting(false);
+    if (!result) {
+      setError('Something went wrong submitting this — please try again.');
+      return;
     }
-
-    addEntry({
-      kind: derivedKind,
-      thread,
-      source,
-      title: title.trim(),
-      offeredBy: offeredBy.trim() || undefined,
-      tagline: note.trim() || undefined,
-      excerpt: (note.trim() || text.trim() || file?.name || 'A new offering.').slice(0, 160),
-      body:
-        derivedKind === 'Link'
-          ? link.trim()
-          : derivedKind === 'Writing'
-            ? text.trim()
-            : note.trim() || (file ? `Attached: ${file.name}` : 'No description was provided.'),
-      link: derivedKind === 'Link' ? link.trim() : undefined,
-      imageColor:
-        derivedKind !== 'Link' && derivedKind !== 'Writing' && !imageUrl
-          ? 'linear-gradient(135deg, #cbd8a0, #9fb385)'
-          : undefined,
-      imageUrl,
-      fileName: file?.name,
-    });
-
     navigate('/');
   };
 

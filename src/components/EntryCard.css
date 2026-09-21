@@ -20,6 +20,25 @@
   box-shadow: 0 10px 26px rgba(40, 30, 10, 0.28);
 }
 
+.entry-card-hidden {
+  outline: 2px dashed #a3253a;
+  outline-offset: 2px;
+  opacity: 0.75;
+}
+
+.entry-card-hidden-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 1;
+  background: #a3253a;
+  color: #f8f7f2;
+  font-size: 10px;
+  font-family: var(--font-body);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
 .entry-card-header {
   background: var(--color-card-header-bg);
   color: var(--color-card-navy);

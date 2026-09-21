@@ -16,8 +16,10 @@ export interface Entry {
   body: string;
   link?: string;
   imageColor?: string;
-  imageUrl?: string;
+  fileUrl?: string;
   fileName?: string;
   x: number;
   y: number;
+  reportCount?: number;
+  hidden?: boolean;
 }

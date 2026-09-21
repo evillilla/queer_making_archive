@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ExternalLink, Flag, Trash2, Download } from 'lucide-react';
 import type { Entry } from '../data/types';
 import { KindIcon } from './kindIcon';
 import { PixelX } from './PixelX';
@@ -8,6 +8,9 @@ import './EntryModal.css';
 interface EntryModalProps {
   entry: Entry;
   onClose: () => void;
+  isAdmin: boolean;
+  onReport: (reason: string) => Promise<boolean>;
+  onDelete: () => Promise<boolean>;
 }
 
 function formatLinkLabel(url: string): string {
@@ -26,7 +29,39 @@ function isPreviewableUrl(url: string): boolean {
   }
 }
 
-export function EntryModal({ entry, onClose }: EntryModalProps) {
+function EntryMedia({ entry }: { entry: Entry }) {
+  if (entry.kind === 'Image') {
+    if (entry.fileUrl) return <img className="entry-modal-image" src={entry.fileUrl} alt={entry.title} />;
+    if (entry.imageColor) return <div className="entry-modal-image" style={{ background: entry.imageColor }} />;
+    return null;
+  }
+
+  if (entry.kind === 'Sound' && entry.fileUrl) {
+    return <audio className="entry-modal-audio" controls src={entry.fileUrl} />;
+  }
+
+  if (entry.kind === 'Video' && entry.fileUrl) {
+    return <video className="entry-modal-video" controls src={entry.fileUrl} />;
+  }
+
+  if (entry.fileUrl) {
+    return (
+      <a href={entry.fileUrl} target="_blank" rel="noreferrer" className="entry-modal-link">
+        <Download size={14} />
+        {entry.fileName ?? 'Open file'}
+      </a>
+    );
+  }
+
+  return null;
+}
+
+export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: EntryModalProps) {
+  const [showReportForm, setShowReportForm] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportSent, setReportSent] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -34,6 +69,22 @@ export function EntryModal({ entry, onClose }: EntryModalProps) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
+
+  const handleReportSubmit = async () => {
+    const ok = await onReport(reportReason.trim());
+    if (ok) {
+      setReportSent(true);
+      setShowReportForm(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm(`Delete "${entry.title}" for everyone? This can't be undone.`)) return;
+    setDeleting(true);
+    const ok = await onDelete();
+    if (ok) onClose();
+    else setDeleting(false);
+  };
 
   return (
     <div className="entry-modal-overlay" onClick={onClose}>
@@ -53,11 +104,9 @@ export function EntryModal({ entry, onClose }: EntryModalProps) {
         </div>
         <div className="entry-modal-body">
           {entry.tagline && <p className="entry-modal-tagline">{entry.tagline}</p>}
-          {entry.imageUrl ? (
-            <img className="entry-modal-image" src={entry.imageUrl} alt={entry.title} />
-          ) : (
-            entry.imageColor && <div className="entry-modal-image" style={{ background: entry.imageColor }} />
-          )}
+
+          <EntryMedia entry={entry} />
+
           {entry.link ? (
             <div className="entry-modal-link-preview">
               {isPreviewableUrl(entry.link) && (
@@ -83,10 +132,53 @@ export function EntryModal({ entry, onClose }: EntryModalProps) {
               )}
             </div>
           ) : (
-            <div className="entry-modal-text-box">
-              <p>{entry.body}</p>
-            </div>
+            entry.body && (
+              <div className="entry-modal-text-box">
+                <p>{entry.body}</p>
+              </div>
+            )
           )}
+
+          <div className="entry-modal-footer-controls">
+            {reportSent ? (
+              <p className="entry-modal-report-thanks">Thanks — this has been flagged for review.</p>
+            ) : showReportForm ? (
+              <div className="entry-modal-report-form">
+                <textarea
+                  placeholder="What's wrong with this offering? (optional)"
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  rows={2}
+                />
+                <div className="entry-modal-report-actions">
+                  <button type="button" onClick={handleReportSubmit} className="entry-modal-report-submit">
+                    Submit report
+                  </button>
+                  <button type="button" onClick={() => setShowReportForm(false)} className="entry-modal-report-cancel">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button type="button" className="entry-modal-report-link" onClick={() => setShowReportForm(true)}>
+                <Flag size={13} />
+                Report this offering
+              </button>
+            )}
+
+            {isAdmin && (
+              <div className="entry-modal-admin">
+                <span className="entry-modal-admin-info">
+                  {entry.reportCount ? `${entry.reportCount} report(s)` : 'No reports'}
+                  {entry.hidden ? ' · hidden' : ''}
+                </span>
+                <button type="button" className="entry-modal-delete" onClick={handleDelete} disabled={deleting}>
+                  <Trash2 size={13} />
+                  {deleting ? 'Deleting…' : 'Delete'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

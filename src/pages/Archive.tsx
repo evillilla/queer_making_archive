@@ -3,11 +3,22 @@ import { Header } from '../components/Header';
 import { Filters, type FilterState } from '../components/Filters';
 import { EntryCanvas } from '../components/EntryCanvas';
 import { EntryModal } from '../components/EntryModal';
+import { AdminAccess } from '../components/AdminAccess';
 import { mergeThreads } from '../data/entries';
 import { KINDS } from '../data/types';
 import type { Entry } from '../data/types';
+import type { useAdminAuth } from '../hooks/useAdminAuth';
+import type { useEntries } from '../hooks/useEntries';
 
-export function Archive({ entries }: { entries: Entry[] }) {
+interface ArchiveProps {
+  entries: Entry[];
+  loading: boolean;
+  admin: ReturnType<typeof useAdminAuth>;
+  reportEntry: ReturnType<typeof useEntries>['reportEntry'];
+  deleteEntry: ReturnType<typeof useEntries>['deleteEntry'];
+}
+
+export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: ArchiveProps) {
   const [filters, setFilters] = useState<FilterState>({ kind: 'All', thread: 'All', source: 'All' });
   const [openEntry, setOpenEntry] = useState<Entry | null>(null);
 
@@ -37,8 +48,21 @@ export function Archive({ entries }: { entries: Entry[] }) {
         kindCounts={kindCounts}
         total={entries.length}
       />
-      <EntryCanvas entries={filteredEntries} onOpen={setOpenEntry} />
-      {openEntry && <EntryModal entry={openEntry} onClose={() => setOpenEntry(null)} />}
+      {loading ? (
+        <p className="archive-loading">Loading the archive…</p>
+      ) : (
+        <EntryCanvas entries={filteredEntries} onOpen={setOpenEntry} />
+      )}
+      {openEntry && (
+        <EntryModal
+          entry={openEntry}
+          onClose={() => setOpenEntry(null)}
+          isAdmin={admin.isAdmin}
+          onReport={(reason) => reportEntry(openEntry.id, reason)}
+          onDelete={() => deleteEntry(openEntry.id)}
+        />
+      )}
+      <AdminAccess admin={admin} />
     </div>
   );
 }

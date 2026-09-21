@@ -1,9 +1,11 @@
 -- Living Archive of Queer Making — shared backend schema.
--- Run this once in the Supabase project's SQL editor (Project > SQL Editor > New query).
+-- Run this in the Supabase project's SQL editor (Project > SQL Editor > New query).
+-- Safe to re-run: policies are dropped and recreated, tables/bucket use
+-- IF NOT EXISTS / ON CONFLICT so nothing errors out on a second run.
 --
 -- Auto-hide threshold: an entry is hidden from public view once it collects
--- REPORT_THRESHOLD reports. Change the "3" below before running if you want
--- a different number.
+-- REPORT_THRESHOLD reports (set to 3 below — change it before running if
+-- you want a different number).
 
 create table if not exists entries (
   id uuid primary key default gen_random_uuid(),
@@ -16,7 +18,7 @@ create table if not exists entries (
   excerpt text,
   body text,
   link text,
-  image_url text,
+  file_url text,
   file_name text,
   x double precision not null,
   y double precision not null,
@@ -35,26 +37,27 @@ create table if not exists reports (
 alter table entries enable row level security;
 alter table reports enable row level security;
 
--- Anyone (including logged-out visitors) can see entries that aren't hidden.
+drop policy if exists "public read visible entries" on entries;
 create policy "public read visible entries" on entries
   for select using (not hidden);
 
--- The signed-in admin can see everything, hidden included, for moderation.
+drop policy if exists "admin read all entries" on entries;
 create policy "admin read all entries" on entries
   for select to authenticated using (true);
 
--- Anyone can submit a new offering.
+drop policy if exists "public insert entries" on entries;
 create policy "public insert entries" on entries
   for insert with check (true);
 
--- Only the signed-in admin can edit or delete entries directly.
+drop policy if exists "admin update entries" on entries;
 create policy "admin update entries" on entries
   for update to authenticated using (true);
 
+drop policy if exists "admin delete entries" on entries;
 create policy "admin delete entries" on entries
   for delete to authenticated using (true);
 
--- Only the signed-in admin can read report reasons.
+drop policy if exists "admin read reports" on reports;
 create policy "admin read reports" on reports
   for select to authenticated using (true);
 
@@ -80,3 +83,23 @@ end;
 $$;
 
 grant execute on function report_entry(uuid, text) to anon, authenticated;
+
+-- Storage bucket for uploaded offerings (images, sounds, videos, PDFs,
+-- fonts, anything else). Public read so cards/modals can just link
+-- straight to the file; upload is open to anyone (matches "no account
+-- needed" submissions); only the admin can delete an object directly.
+insert into storage.buckets (id, name, public)
+  values ('offerings', 'offerings', true)
+  on conflict (id) do nothing;
+
+drop policy if exists "public read offerings" on storage.objects;
+create policy "public read offerings" on storage.objects
+  for select using (bucket_id = 'offerings');
+
+drop policy if exists "public upload offerings" on storage.objects;
+create policy "public upload offerings" on storage.objects
+  for insert with check (bucket_id = 'offerings');
+
+drop policy if exists "admin delete offerings" on storage.objects;
+create policy "admin delete offerings" on storage.objects
+  for delete to authenticated using (bucket_id = 'offerings');

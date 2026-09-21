@@ -98,6 +98,119 @@
   color: var(--color-maroon);
 }
 
+.entry-modal-audio {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.entry-modal-video {
+  width: 100%;
+  max-height: 360px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  background: black;
+}
+
+.entry-modal-footer-controls {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-input-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.entry-modal-report-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-maroon-soft);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.entry-modal-report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.entry-modal-report-form textarea {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-maroon);
+  border: 1px solid var(--color-input-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  resize: vertical;
+}
+
+.entry-modal-report-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.entry-modal-report-submit,
+.entry-modal-report-cancel {
+  font-family: var(--font-body);
+  font-size: 13px;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border: 1px solid var(--color-input-border);
+  background: transparent;
+  color: var(--color-maroon);
+}
+
+.entry-modal-report-thanks {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-maroon-soft);
+  margin: 0;
+}
+
+.entry-modal-admin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-pill-bg);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.entry-modal-admin-info {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-maroon-soft);
+}
+
+.entry-modal-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #a3253a;
+  color: #f8f7f2;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.entry-modal-delete:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .entry-modal-link-preview {
   display: flex;
   flex-direction: column;

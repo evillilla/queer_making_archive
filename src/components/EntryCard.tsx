@@ -9,9 +9,15 @@ interface EntryCardProps {
 
 export function EntryCard({ entry, onOpen }: EntryCardProps) {
   return (
-    <button type="button" className="entry-card" onClick={() => onOpen(entry)} style={{ left: entry.x, top: entry.y }}>
-      {entry.imageUrl ? (
-        <img className="entry-card-image" src={entry.imageUrl} alt={entry.title} />
+    <button
+      type="button"
+      className={`entry-card${entry.hidden ? ' entry-card-hidden' : ''}`}
+      onClick={() => onOpen(entry)}
+      style={{ left: entry.x, top: entry.y }}
+    >
+      {entry.hidden && <span className="entry-card-hidden-tag">Hidden</span>}
+      {entry.kind === 'Image' && entry.fileUrl ? (
+        <img className="entry-card-image" src={entry.fileUrl} alt={entry.title} />
       ) : entry.imageColor ? (
         <div className="entry-card-image" style={{ background: entry.imageColor }} />
       ) : (
