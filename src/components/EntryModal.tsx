@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ExternalLink, Flag, Trash2, Download } from 'lucide-react';
+import { ExternalLink, Flag } from 'lucide-react';
 import type { Entry } from '../data/types';
 import { KindIcon } from './kindIcon';
 import { PixelX } from './PixelX';
+import { DownloadIcon, TrashIcon } from './customIcons';
 import './EntryModal.css';
 
 interface EntryModalProps {
@@ -47,7 +48,7 @@ function EntryMedia({ entry }: { entry: Entry }) {
   if (entry.fileUrl) {
     return (
       <a href={entry.fileUrl} target="_blank" rel="noreferrer" className="entry-modal-link">
-        <Download size={14} />
+        <DownloadIcon size={14} />
         {entry.fileName ?? 'Open file'}
       </a>
     );
@@ -173,7 +174,7 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
                   {entry.hidden ? ' · hidden' : ''}
                 </span>
                 <button type="button" className="entry-modal-delete" onClick={handleDelete} disabled={deleting}>
-                  <Trash2 size={13} />
+                  <TrashIcon size={13} />
                   {deleting ? 'Deleting…' : 'Delete'}
                 </button>
               </div>

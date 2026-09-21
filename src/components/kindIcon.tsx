@@ -1,18 +1,20 @@
-import { ImageIcon, Volume2, Video, PenLine, Link2, FileText, Type, Box } from 'lucide-react';
+import { ImageIcon, Type } from 'lucide-react';
 import type { Kind } from '../data/types';
+import { SoundIcon, VideoIcon, WritingIcon, LinkIcon, DocumentIcon, ObjectIcon } from './customIcons';
 
-const ICONS: Record<Kind, React.ComponentType<{ size?: number; strokeWidth?: number }>> = {
+const ICONS: Record<Kind, React.ComponentType<{ size?: number }>> = {
+  // Still lucide, pending matching custom icons
   Image: ImageIcon,
-  Sound: Volume2,
-  Video: Video,
-  Writing: PenLine,
-  Link: Link2,
-  PDF: FileText,
   Font: Type,
-  Object: Box,
+  Sound: SoundIcon,
+  Video: VideoIcon,
+  Writing: WritingIcon,
+  Link: LinkIcon,
+  PDF: DocumentIcon,
+  Object: ObjectIcon,
 };
 
 export function KindIcon({ kind, size = 14 }: { kind: Kind; size?: number }) {
   const Icon = ICONS[kind];
-  return <Icon size={size} strokeWidth={2} />;
+  return <Icon size={size} />;
 }

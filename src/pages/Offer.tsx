@@ -1,10 +1,10 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
 import { type Entry, type Kind } from '../data/types';
 import { mergeThreads, mergeSources } from '../data/entries';
 import { detectKindFromFile } from '../data/detectKind';
 import { KindIcon } from '../components/kindIcon';
+import { BackIcon } from '../components/customIcons';
 import { useEntries } from '../hooks/useEntries';
 import './Offer.css';
 
@@ -91,7 +91,7 @@ export function Offer({
   return (
     <div className="offer-page">
       <Link to="/" className="offer-back">
-        <ArrowLeft size={16} />
+        <BackIcon size={16} />
         Back to the archive
       </Link>
 

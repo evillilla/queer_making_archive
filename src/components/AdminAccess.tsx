@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield } from 'lucide-react';
+import { ShieldIcon } from './customIcons';
 import type { useAdminAccess } from '../hooks/useAdminAccess';
 import './AdminAccess.css';
 
@@ -10,7 +10,7 @@ export function AdminAccess({ admin }: { admin: ReturnType<typeof useAdminAccess
   if (admin.isAdmin) {
     return (
       <div className="admin-access admin-access-active">
-        <Shield size={13} />
+        <ShieldIcon size={13} />
         Admin mode
         <button type="button" onClick={() => admin.signOut()}>
           Log out
