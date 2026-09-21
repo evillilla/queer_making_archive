@@ -94,7 +94,7 @@ returns void
 language plpgsql
 security definer
 set search_path = public
-as $$
+as $fn$
 declare
   report_threshold constant integer := 3;
 begin
@@ -105,7 +105,7 @@ begin
         hidden = (report_count + 1) >= report_threshold
     where id = p_entry_id;
 end;
-$$;
+$fn$;
 
 grant execute on function report_entry(uuid, text) to anon, authenticated;
 
@@ -116,7 +116,7 @@ returns boolean
 language plpgsql
 security definer
 set search_path = public
-as $$
+as $fn$
 declare
   stored_hash text;
 begin
@@ -126,7 +126,7 @@ begin
   end if;
   return stored_hash = crypt(p_passcode, stored_hash);
 end;
-$$;
+$fn$;
 
 grant execute on function verify_admin_passcode(text) to anon, authenticated;
 
@@ -136,14 +136,14 @@ returns setof entries
 language plpgsql
 security definer
 set search_path = public
-as $$
+as $fn$
 begin
   if not verify_admin_passcode(p_passcode) then
     raise exception 'invalid passcode';
   end if;
   return query select * from entries order by created_at asc;
 end;
-$$;
+$fn$;
 
 grant execute on function admin_list_entries(text) to anon, authenticated;
 
@@ -153,7 +153,7 @@ returns boolean
 language plpgsql
 security definer
 set search_path = public
-as $$
+as $fn$
 begin
   if not verify_admin_passcode(p_passcode) then
     raise exception 'invalid passcode';
@@ -161,7 +161,7 @@ begin
   delete from entries where id = p_entry_id;
   return found;
 end;
-$$;
+$fn$;
 
 grant execute on function admin_delete_entry(text, uuid) to anon, authenticated;
 
