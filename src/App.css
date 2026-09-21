@@ -1,15 +1,49 @@
 .archive-page {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   height: 100vh;
+  overflow: hidden;
 }
 
 .archive-loading {
-  flex: 1;
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-body);
   color: var(--color-maroon-soft);
   margin: 0;
+}
+
+.archive-overlay-panel {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 10;
+  max-width: min(760px, calc(100vw - 260px));
+  background: var(--color-bg);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  padding: 28px 32px 20px;
+}
+
+.archive-offer-button {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+}
+
+@media (max-width: 720px) {
+  .archive-overlay-panel {
+    max-width: calc(100vw - 180px);
+    padding: 20px 20px 16px;
+  }
+
+  .archive-offer-button {
+    top: 16px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
 }

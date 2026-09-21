@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import { Header } from '../components/Header';
 import { Filters, type FilterState } from '../components/Filters';
 import { EntryCanvas } from '../components/EntryCanvas';
@@ -41,20 +43,29 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
 
   return (
     <div className="archive-page">
-      <Header />
-      <Filters
-        value={filters}
-        onChange={setFilters}
-        threads={threads}
-        sources={sources}
-        kindCounts={kindCounts}
-        total={entries.length}
-      />
       {loading ? (
         <p className="archive-loading">Loading the archive…</p>
       ) : (
         <EntryCanvas entries={filteredEntries} onOpen={setOpenEntry} />
       )}
+
+      <div className="archive-overlay-panel">
+        <Header />
+        <Filters
+          value={filters}
+          onChange={setFilters}
+          threads={threads}
+          sources={sources}
+          kindCounts={kindCounts}
+          total={entries.length}
+        />
+      </div>
+
+      <Link to="/offer" className="offer-button archive-offer-button">
+        <Plus size={18} strokeWidth={3} />
+        Offer something
+      </Link>
+
       {openEntry && (
         <EntryModal
           entry={openEntry}
