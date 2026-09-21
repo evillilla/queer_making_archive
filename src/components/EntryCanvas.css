@@ -1,7 +1,7 @@
 .entry-canvas-viewport {
   position: absolute;
   inset: 0;
-  background: var(--color-bg);
+  background: var(--color-canvas-bg);
   overflow: hidden;
 }
 
