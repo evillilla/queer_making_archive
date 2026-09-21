@@ -4,6 +4,7 @@ import type { Entry } from '../data/types';
 import { KindIcon } from './kindIcon';
 import { PixelX } from './PixelX';
 import { DownloadIcon, TrashIcon, FlagIcon } from './customIcons';
+import { AudioPlayer } from './AudioPlayer';
 import './EntryModal.css';
 
 interface EntryModalProps {
@@ -38,7 +39,7 @@ function EntryMedia({ entry }: { entry: Entry }) {
   }
 
   if (entry.kind === 'Sound' && entry.fileUrl) {
-    return <audio className="entry-modal-audio" controls src={entry.fileUrl} />;
+    return <AudioPlayer src={entry.fileUrl} />;
   }
 
   if (entry.kind === 'Video' && entry.fileUrl) {
