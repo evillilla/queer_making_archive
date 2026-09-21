@@ -1,6 +1,4 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
 import { Header } from '../components/Header';
 import { Filters, type FilterState } from '../components/Filters';
 import { EntryCanvas } from '../components/EntryCanvas';
@@ -60,11 +58,6 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
           total={entries.length}
         />
       </div>
-
-      <Link to="/offer" className="offer-button archive-offer-button">
-        <Plus size={18} strokeWidth={3} />
-        Offer something
-      </Link>
 
       {openEntry && (
         <EntryModal

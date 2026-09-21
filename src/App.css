@@ -20,30 +20,16 @@
   top: 24px;
   left: 24px;
   z-index: 10;
-  max-width: min(760px, calc(100vw - 260px));
+  max-width: min(880px, calc(100vw - 48px));
   background: var(--color-bg);
   border-radius: 20px;
   box-shadow: var(--shadow-card);
   padding: 28px 32px 20px;
 }
 
-.archive-offer-button {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  z-index: 10;
-}
-
 @media (max-width: 720px) {
   .archive-overlay-panel {
-    max-width: calc(100vw - 180px);
+    max-width: calc(100vw - 48px);
     padding: 20px 20px 16px;
-  }
-
-  .archive-offer-button {
-    top: 16px;
-    right: 16px;
-    padding: 10px 16px;
-    font-size: 13px;
   }
 }
