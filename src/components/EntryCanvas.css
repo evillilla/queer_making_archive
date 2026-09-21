@@ -1,0 +1,34 @@
+.entry-canvas-viewport {
+  flex: 1;
+  min-height: 0;
+  background: radial-gradient(
+      circle at 20% 20%,
+      var(--color-canvas-bg-c),
+      transparent 55%
+    ),
+    radial-gradient(circle at 80% 70%, var(--color-canvas-bg-c), transparent 50%),
+    linear-gradient(160deg, var(--color-canvas-bg-a), var(--color-canvas-bg-b));
+  overflow: hidden;
+  position: relative;
+}
+
+.entry-canvas-viewport .react-transform-wrapper,
+.entry-canvas-viewport .react-transform-component {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.entry-canvas-world {
+  position: relative;
+}
+
+.entry-canvas-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-body);
+  color: var(--color-maroon-soft);
+  font-size: 16px;
+  white-space: nowrap;
+}

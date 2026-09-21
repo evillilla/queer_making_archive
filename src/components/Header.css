@@ -1,0 +1,54 @@
+.archive-header {
+  padding: 40px 48px 24px;
+}
+
+.archive-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.archive-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-size: clamp(28px, 4.2vw, 52px);
+  color: var(--color-maroon);
+  margin: 0;
+  line-height: 1;
+}
+
+.offer-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 16px;
+  padding: 14px 26px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.offer-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.archive-subtitle {
+  max-width: 640px;
+  margin: 18px 0 0;
+  color: var(--color-maroon);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+}

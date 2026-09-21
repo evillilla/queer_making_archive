@@ -1,0 +1,59 @@
+:root {
+  --color-bg: #d3d0c1;
+  --color-canvas-bg-a: #cfd0b6;
+  --color-canvas-bg-b: #c3c9ac;
+  --color-canvas-bg-c: #b8c9a0;
+
+  --color-maroon: #481433;
+  --color-maroon-soft: #8a5a68;
+  --color-accent: #d7f24a;
+  --color-accent-text: #3c1c10;
+
+  --color-pill-bg: #f3f1e7;
+  --color-pill-border: rgba(72, 20, 51, 0.12);
+
+  --color-card-header-bg: #e4e1fb;
+  --color-card-footer-bg: #f8f7f2;
+  --color-card-navy: #34306b;
+  --color-card-navy-soft: #6a67a0;
+  --color-dot: #6f7bdb;
+
+  --color-input-border: rgba(72, 20, 51, 0.28);
+  --color-input-placeholder: #8a6a76;
+
+  --shadow-card: 0 6px 18px rgba(40, 30, 10, 0.18);
+  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.35);
+
+  --radius-pill: 999px;
+  --radius-card: 14px;
+  --radius-modal: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-maroon);
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}

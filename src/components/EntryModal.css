@@ -1,0 +1,103 @@
+.entry-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 6, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+}
+
+.entry-modal {
+  position: relative;
+  width: min(680px, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--color-card-footer-bg);
+  border-radius: var(--radius-modal);
+  box-shadow: var(--shadow-modal);
+}
+
+.entry-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+  background: var(--color-card-header-bg);
+  color: var(--color-maroon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.entry-modal-header {
+  background: var(--color-card-header-bg);
+  padding: 28px 60px 24px 28px;
+}
+
+.entry-modal-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-card-navy-soft);
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.entry-modal-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(24px, 3vw, 34px);
+  color: var(--color-card-navy);
+  margin: 0;
+}
+
+.entry-modal-offered {
+  margin: 10px 0 0;
+  color: var(--color-card-navy-soft);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.entry-modal-body {
+  padding: 28px;
+}
+
+.entry-modal-tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--color-maroon);
+  font-size: 17px;
+  margin: 0 0 20px;
+}
+
+.entry-modal-image {
+  height: 220px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.entry-modal-text-box {
+  background: var(--color-bg);
+  border-radius: 10px;
+  padding: 22px 24px;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--color-maroon);
+}
+
+.entry-modal-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: underline;
+  color: var(--color-maroon);
+}

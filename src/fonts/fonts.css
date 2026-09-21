@@ -1,0 +1,39 @@
+@font-face {
+  font-family: 'Quipo';
+  src: url('./files/Quipo.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inclusive Sans';
+  src: url('./files/InclusiveSans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inclusive Sans';
+  src: url('./files/InclusiveSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inclusive Sans';
+  src: url('./files/InclusiveSans-Italic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* Titles and buttons */
+  --font-display: 'Quipo', 'Arial Narrow', sans-serif;
+  --font-serif: 'Quipo', 'Arial Narrow', sans-serif;
+  /* Everything else */
+  --font-body: 'Inclusive Sans', 'Helvetica Neue', sans-serif;
+}
