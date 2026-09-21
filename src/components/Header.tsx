@@ -6,7 +6,7 @@ export function Header() {
   return (
     <header className="archive-header">
       <div className="archive-header-top">
-        <h1 className="archive-title">Living Archive of Queer Making</h1>
+        <h1 className="archive-title">Digital Archive of Queer Making</h1>
         <Link to="/offer" className="offer-button">
           <Plus size={18} strokeWidth={3} />
           Offer something
