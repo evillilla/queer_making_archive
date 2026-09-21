@@ -1,23 +1,21 @@
 :root {
   --color-bg: #cbc7c0;
-  --color-mushroom-a: #d6cfc0;
-  --color-mushroom-b: #c7bfae;
 
-  --color-maroon: #481433;
+  --color-maroon: #500e29;
   --color-maroon-soft: #8a5a68;
   --color-accent: #c7fc5f;
   --color-accent-text: #3c1c10;
+  --color-line-neutral: #7d7971;
 
   --color-pill-bg: #f3f1e7;
-  --color-pill-border: rgba(72, 20, 51, 0.12);
+  --color-pill-border: rgba(80, 14, 41, 0.12);
 
-  --color-card-header-bg: #481433;
+  --color-card-header-bg: var(--color-maroon);
   --color-card-footer-bg: #f8f7f2;
   --color-card-navy: #f5efe1;
   --color-card-navy-soft: #d9c9d1;
-  --color-dot: #6f7bdb;
 
-  --color-input-border: rgba(72, 20, 51, 0.28);
+  --color-input-border: rgba(80, 14, 41, 0.28);
   --color-input-placeholder: #8a6a76;
 
   --shadow-card: 0 6px 18px rgba(40, 30, 10, 0.18);

@@ -17,6 +17,56 @@ interface Cluster {
 }
 
 const CLUSTER_DISTANCE = 420;
+const MINOR_ACTS_SOURCES = new Set(['Minor Acts 1.0', 'Minor Acts 2.0']);
+
+interface Edge {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  color: string;
+}
+
+function center(entry: Entry) {
+  return { x: entry.x + 110, y: entry.y + 80 };
+}
+
+function groupBy<T, K>(items: T[], keyFn: (item: T) => K): Map<K, T[]> {
+  const groups = new Map<K, T[]>();
+  for (const item of items) {
+    const key = keyFn(item);
+    const group = groups.get(key);
+    if (group) group.push(item);
+    else groups.set(key, [item]);
+  }
+  return groups;
+}
+
+function edgesWithinGroups(groups: Map<unknown, Entry[]>, color: string): Edge[] {
+  const edges: Edge[] = [];
+  for (const group of groups.values()) {
+    for (let i = 0; i < group.length; i++) {
+      for (let j = i + 1; j < group.length; j++) {
+        const a = center(group[i]);
+        const b = center(group[j]);
+        edges.push({ x1: a.x, y1: a.y, x2: b.x, y2: b.y, color });
+      }
+    }
+  }
+  return edges;
+}
+
+function computeEdges(entries: Entry[]): Edge[] {
+  const byThread = groupBy(entries, (e) => e.thread);
+  const byMinorActsSource = groupBy(
+    entries.filter((e) => MINOR_ACTS_SOURCES.has(e.source)),
+    (e) => e.source,
+  );
+  return [
+    ...edgesWithinGroups(byThread, 'var(--color-line-neutral)'),
+    ...edgesWithinGroups(byMinorActsSource, 'var(--color-accent)'),
+  ];
+}
 
 function computeClusters(entries: Entry[]): Cluster[] {
   const clusters: Cluster[] = [];
@@ -37,6 +87,7 @@ function computeClusters(entries: Entry[]): Cluster[] {
 
 export function EntryCanvas({ entries, onOpen }: EntryCanvasProps) {
   const clusters = useMemo(() => computeClusters(entries), [entries]);
+  const edges = useMemo(() => computeEdges(entries), [entries]);
 
   return (
     <div className="entry-canvas-viewport">
@@ -68,6 +119,20 @@ export function EntryCanvas({ entries, onOpen }: EntryCanvasProps) {
                 />
               );
             })}
+            <svg className="entry-canvas-edges" width={CANVAS_WIDTH} height={CANVAS_HEIGHT}>
+              {edges.map((edge, i) => (
+                <line
+                  key={i}
+                  x1={edge.x1}
+                  y1={edge.y1}
+                  x2={edge.x2}
+                  y2={edge.y2}
+                  stroke={edge.color}
+                  strokeWidth={1}
+                  opacity={0.7}
+                />
+              ))}
+            </svg>
             {entries.map((entry) => (
               <EntryCard key={entry.id} entry={entry} onOpen={onOpen} />
             ))}

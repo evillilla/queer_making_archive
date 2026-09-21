@@ -53,14 +53,6 @@
   padding: 12px 14px;
 }
 
-.entry-card-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-dot);
-  flex-shrink: 0;
-}
-
 .entry-card-title {
   font-weight: 700;
   font-size: 14px;

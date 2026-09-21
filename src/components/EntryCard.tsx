@@ -21,7 +21,6 @@ export function EntryCard({ entry, onOpen }: EntryCardProps) {
         </div>
       )}
       <div className="entry-card-footer">
-        <span className="entry-card-dot" />
         <span className="entry-card-title">{entry.title}</span>
       </div>
     </button>

@@ -18,7 +18,8 @@
   letter-spacing: 0.08em;
   font-size: 13px;
   color: var(--color-maroon);
-  min-width: 66px;
+  min-width: 92px;
+  flex-shrink: 0;
 }
 
 .filter-pills {

@@ -1,9 +1,15 @@
 .entry-canvas-viewport {
   flex: 1;
   min-height: 0;
-  background: linear-gradient(160deg, var(--color-mushroom-a), var(--color-mushroom-b));
+  background: var(--color-bg);
   overflow: hidden;
   position: relative;
+}
+
+.entry-canvas-edges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 .entry-canvas-blob {
