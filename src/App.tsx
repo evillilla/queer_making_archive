@@ -2,11 +2,11 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { Archive } from './pages/Archive';
 import { Offer } from './pages/Offer';
 import { useEntries } from './hooks/useEntries';
-import { useAdminAuth } from './hooks/useAdminAuth';
+import { useAdminAccess } from './hooks/useAdminAccess';
 
 export default function App() {
-  const { entries, loading, addEntry, reportEntry, deleteEntry } = useEntries();
-  const admin = useAdminAuth();
+  const admin = useAdminAccess();
+  const { entries, loading, addEntry, reportEntry, deleteEntry } = useEntries(admin.passcode);
 
   return (
     <HashRouter>

@@ -6,17 +6,16 @@ import type { Entry } from '../data/types';
 
 export type NewEntry = Omit<Entry, 'id' | 'x' | 'y' | 'fileUrl' | 'reportCount' | 'hidden'>;
 
-export function useEntries() {
+export function useEntries(adminPasscode: string | null) {
   const [entries, setEntries] = useState<Entry[]>(isSupabaseConfigured ? [] : seedEntries);
   const [loading, setLoading] = useState(isSupabaseConfigured);
 
-  const fetchEntries = useCallback(async () => {
+  const fetchEntries = useCallback(async (passcode: string | null) => {
     if (!supabase) return;
     try {
-      const { data, error } = await supabase
-        .from('entries')
-        .select('*')
-        .order('created_at', { ascending: true });
+      const { data, error } = passcode
+        ? await supabase.rpc('admin_list_entries', { p_passcode: passcode })
+        : await supabase.from('entries').select('*').order('created_at', { ascending: true });
       if (!error && data) {
         setEntries((data as EntryRow[]).map(rowToEntry));
       }
@@ -28,13 +27,8 @@ export function useEntries() {
   }, []);
 
   useEffect(() => {
-    if (!supabase) return;
-    fetchEntries();
-    const { data: listener } = supabase.auth.onAuthStateChange(() => {
-      fetchEntries();
-    });
-    return () => listener.subscription.unsubscribe();
-  }, [fetchEntries]);
+    fetchEntries(adminPasscode);
+  }, [fetchEntries, adminPasscode]);
 
   const addEntry = useCallback(async (entry: NewEntry, file: File | null) => {
     if (!supabase) return null;
@@ -79,17 +73,23 @@ export function useEntries() {
     }
   }, []);
 
-  const deleteEntry = useCallback(async (entryId: string) => {
-    if (!supabase) return false;
-    try {
-      const { error } = await supabase.from('entries').delete().eq('id', entryId);
-      if (error) return false;
-      setEntries((prev) => prev.filter((e) => e.id !== entryId));
-      return true;
-    } catch {
-      return false;
-    }
-  }, []);
+  const deleteEntry = useCallback(
+    async (entryId: string) => {
+      if (!supabase || !adminPasscode) return false;
+      try {
+        const { data, error } = await supabase.rpc('admin_delete_entry', {
+          p_passcode: adminPasscode,
+          p_entry_id: entryId,
+        });
+        if (error || !data) return false;
+        setEntries((prev) => prev.filter((e) => e.id !== entryId));
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [adminPasscode],
+  );
 
   return { entries, loading, addEntry, reportEntry, deleteEntry };
 }

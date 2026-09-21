@@ -25,13 +25,19 @@ up, everything comes from the database instead.
 - Anyone can report an offering, with an optional reason. After 3 reports it's automatically
   hidden from public view (still visible to the admin, marked "Hidden").
 - The site owner can log in as admin (bottom-left "Admin" button) and delete any offering.
-  Admin login is a real Supabase Auth user, not a password baked into the code.
+  Admin login is a single shared passcode you choose (see setup below) — not a full user
+  account system, which is deliberately overkill for a single-moderator project. The passcode
+  is checked server-side (via a Postgres function, hashed at rest) and never shipped in the
+  app's code, but it is a shared secret rather than a personal login — anyone who has it can
+  delete things, so treat it like a door key, not a password you'd reuse elsewhere.
 
 ### Backend setup (Supabase)
 
 1. Create a free project at [supabase.com](https://supabase.com).
 2. In the SQL Editor, run `supabase/schema.sql` from this repo (safe to re-run).
-3. In Authentication → Users, add one user (your email + a password) — that's the admin login.
+3. Still in the SQL Editor, run the commented-out block at the bottom of that file, with your
+   own chosen passcode in place of the placeholder — that's what sets/changes the admin
+   passcode. Nobody else needs to see this, including whoever builds this app for you.
 4. In Project Settings → API, copy the **Project URL** and **anon/publishable key** into a
    `.env` file (copy `.env.example` and fill it in). Never use the *secret*/service-role key
    here — it must never appear in client-side code.

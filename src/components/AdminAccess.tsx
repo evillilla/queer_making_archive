@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Shield } from 'lucide-react';
-import type { useAdminAuth } from '../hooks/useAdminAuth';
+import type { useAdminAccess } from '../hooks/useAdminAccess';
 import './AdminAccess.css';
 
-export function AdminAccess({ admin }: { admin: ReturnType<typeof useAdminAuth> }) {
+export function AdminAccess({ admin }: { admin: ReturnType<typeof useAdminAccess> }) {
   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [passcode, setPasscode] = useState('');
 
   if (admin.isAdmin) {
     return (
@@ -33,21 +32,15 @@ export function AdminAccess({ admin }: { admin: ReturnType<typeof useAdminAuth> 
       className="admin-access admin-access-form"
       onSubmit={(e) => {
         e.preventDefault();
-        admin.signIn(email, password);
+        admin.signIn(passcode);
       }}
     >
       <input
-        type="email"
-        placeholder="Admin email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        autoFocus
-      />
-      <input
         type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Admin passcode"
+        value={passcode}
+        onChange={(e) => setPasscode(e.target.value)}
+        autoFocus
       />
       <div className="admin-access-actions">
         <button type="submit">Log in</button>

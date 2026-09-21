@@ -7,13 +7,13 @@ import { AdminAccess } from '../components/AdminAccess';
 import { mergeThreads } from '../data/entries';
 import { KINDS } from '../data/types';
 import type { Entry } from '../data/types';
-import type { useAdminAuth } from '../hooks/useAdminAuth';
+import type { useAdminAccess } from '../hooks/useAdminAccess';
 import type { useEntries } from '../hooks/useEntries';
 
 interface ArchiveProps {
   entries: Entry[];
   loading: boolean;
-  admin: ReturnType<typeof useAdminAuth>;
+  admin: ReturnType<typeof useAdminAccess>;
   reportEntry: ReturnType<typeof useEntries>['reportEntry'];
   deleteEntry: ReturnType<typeof useEntries>['deleteEntry'];
 }
