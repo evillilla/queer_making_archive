@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { PenLine } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import type { Entry } from '../data/types';
 import { KindIcon } from './kindIcon';
 import { PixelX } from './PixelX';
@@ -8,6 +8,22 @@ import './EntryModal.css';
 interface EntryModalProps {
   entry: Entry;
   onClose: () => void;
+}
+
+function formatLinkLabel(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+}
+
+function isPreviewableUrl(url: string): boolean {
+  try {
+    return ['http:', 'https:'].includes(new URL(url).protocol);
+  } catch {
+    return false;
+  }
 }
 
 export function EntryModal({ entry, onClose }: EntryModalProps) {
@@ -27,7 +43,7 @@ export function EntryModal({ entry, onClose }: EntryModalProps) {
         </button>
         <div className="entry-modal-header">
           <div className="entry-modal-meta">
-            <PenLine size={14} />
+            <KindIcon kind={entry.kind} size={14} />
             <span>
               {entry.kind.toUpperCase()} &middot; {entry.thread.toUpperCase()}
             </span>
@@ -42,16 +58,35 @@ export function EntryModal({ entry, onClose }: EntryModalProps) {
           ) : (
             entry.imageColor && <div className="entry-modal-image" style={{ background: entry.imageColor }} />
           )}
-          <div className="entry-modal-text-box">
-            {entry.link ? (
+          {entry.link ? (
+            <div className="entry-modal-link-preview">
+              {isPreviewableUrl(entry.link) && (
+                <iframe
+                  key={entry.link}
+                  src={entry.link}
+                  title={entry.title}
+                  className="entry-modal-iframe"
+                  sandbox="allow-scripts allow-same-origin allow-popups"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              )}
               <a href={entry.link} target="_blank" rel="noreferrer" className="entry-modal-link">
-                <KindIcon kind={entry.kind} size={16} />
-                {entry.body}
+                <ExternalLink size={14} />
+                {formatLinkLabel(entry.link)}
               </a>
-            ) : (
+              {isPreviewableUrl(entry.link) && (
+                <p className="entry-modal-iframe-hint">
+                  Some sites block being shown inside another page — if the preview above is
+                  blank, use the link to open it directly.
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="entry-modal-text-box">
               <p>{entry.body}</p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

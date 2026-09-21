@@ -109,7 +109,7 @@ export const seedEntries: Entry[] = [
     tagline: 'A community zine on hand tools and care.',
     excerpt: 'An online zine collecting short essays on the tools people trust most.',
     body: 'An online zine collecting short essays on the tools people trust most, and why. Shared here as a reference thread.',
-    link: '#',
+    link: 'https://en.wikipedia.org/wiki/Zine',
     x: 220,
     y: 220,
   },
