@@ -242,6 +242,17 @@
   font-weight: 700;
 }
 
+.entry-modal-pdf-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.entry-modal-pdf-iframe {
+  height: 480px;
+}
+
 .entry-modal-iframe-hint {
   font-size: 13px;
   color: var(--color-maroon-soft);

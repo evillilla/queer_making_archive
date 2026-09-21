@@ -45,6 +45,18 @@ function EntryMedia({ entry }: { entry: Entry }) {
     return <video className="entry-modal-video" controls src={entry.fileUrl} />;
   }
 
+  if (entry.kind === 'PDF' && entry.fileUrl) {
+    return (
+      <div className="entry-modal-pdf-preview">
+        <iframe src={entry.fileUrl} title={entry.title} className="entry-modal-iframe entry-modal-pdf-iframe" />
+        <a href={entry.fileUrl} target="_blank" rel="noreferrer" className="entry-modal-link">
+          <DownloadIcon size={14} />
+          Open in new tab
+        </a>
+      </div>
+    );
+  }
+
   if (entry.fileUrl) {
     return (
       <a href={entry.fileUrl} target="_blank" rel="noreferrer" className="entry-modal-link">
