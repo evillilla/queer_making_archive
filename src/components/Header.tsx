@@ -12,10 +12,6 @@ export function Header() {
           Offer something
         </Link>
       </div>
-      <p className="archive-subtitle">
-        A nebulous, growing web of offerings. Images, sounds, writing, links and objects,
-        circling the practice of making. Add your own thread.
-      </p>
     </header>
   );
 }

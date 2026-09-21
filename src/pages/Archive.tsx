@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { Header } from '../components/Header';
 import { Filters, type FilterState } from '../components/Filters';
 import { EntryCanvas } from '../components/EntryCanvas';
@@ -21,6 +22,7 @@ interface ArchiveProps {
 export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: ArchiveProps) {
   const [filters, setFilters] = useState<FilterState>({ kind: 'All', thread: 'All', source: 'All' });
   const [openEntry, setOpenEntry] = useState<Entry | null>(null);
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const threads = useMemo(() => mergeThreads(entries), [entries]);
   const sources = useMemo(() => mergeSources(entries), [entries]);
@@ -39,6 +41,8 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
     return true;
   });
 
+  const activeFilterCount = [filters.kind, filters.thread, filters.source].filter((v) => v !== 'All').length;
+
   return (
     <div className="archive-page">
       {loading ? (
@@ -49,14 +53,32 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
 
       <div className="archive-overlay-panel">
         <Header />
-        <Filters
-          value={filters}
-          onChange={setFilters}
-          threads={threads}
-          sources={sources}
-          kindCounts={kindCounts}
-          total={entries.length}
-        />
+
+        <button
+          type="button"
+          className="archive-panel-toggle"
+          onClick={() => setPanelOpen((open) => !open)}
+          aria-expanded={panelOpen}
+        >
+          About &amp; filters
+          {activeFilterCount > 0 && <span className="archive-panel-toggle-count">{activeFilterCount}</span>}
+          <ChevronDown size={16} className={`archive-panel-toggle-chevron${panelOpen ? ' is-open' : ''}`} />
+        </button>
+
+        <div className={`archive-panel-body${panelOpen ? ' is-open' : ''}`}>
+          <p className="archive-subtitle">
+            A nebulous, growing web of offerings. Images, sounds, writing, links and objects,
+            circling the practice of making. Add your own thread.
+          </p>
+          <Filters
+            value={filters}
+            onChange={setFilters}
+            threads={threads}
+            sources={sources}
+            kindCounts={kindCounts}
+            total={entries.length}
+          />
+        </div>
       </div>
 
       {openEntry && (
