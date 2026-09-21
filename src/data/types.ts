@@ -1,4 +1,4 @@
-export const KINDS = ['Image', 'Sound', 'Writing', 'Link', 'PDF', 'Object'] as const;
+export const KINDS = ['Image', 'Sound', 'Video', 'Writing', 'Link', 'PDF', 'Font', 'Object'] as const;
 export type Kind = (typeof KINDS)[number];
 
 export const SOURCES = ['Minor Acts 1.0', 'Minor Acts 2.0', 'Other'] as const;
@@ -16,6 +16,8 @@ export interface Entry {
   body: string;
   link?: string;
   imageColor?: string;
+  imageUrl?: string;
+  fileName?: string;
   x: number;
   y: number;
 }

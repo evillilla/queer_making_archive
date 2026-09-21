@@ -1,57 +1,103 @@
-import { useState, type FormEvent } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { KINDS, SOURCES, type Kind, type Source } from '../data/types';
+import { SOURCES, type Entry, type Kind, type Source } from '../data/types';
+import { mergeThreads } from '../data/entries';
+import { detectKindFromFile } from '../data/detectKind';
+import { KindIcon } from '../components/kindIcon';
 import { useEntries } from '../hooks/useEntries';
 import './Offer.css';
 
-const KIND_ATTACHMENT_LABEL: Record<Kind, string> = {
-  Image: 'Image file',
-  Sound: 'Sound file',
-  PDF: 'PDF file',
-  Object: 'Photo of the object',
-  Writing: 'Your writing',
-  Link: 'Link URL',
-};
+const NEW_THREAD = '__new__';
+const MAX_INLINE_IMAGE_BYTES = 2_000_000;
 
-export function Offer({ addEntry }: { addEntry: ReturnType<typeof useEntries>['addEntry'] }) {
+function readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+export function Offer({
+  entries,
+  addEntry,
+}: {
+  entries: Entry[];
+  addEntry: ReturnType<typeof useEntries>['addEntry'];
+}) {
   const navigate = useNavigate();
+  const threads = useMemo(() => mergeThreads(entries), [entries]);
+
   const [title, setTitle] = useState('');
-  const [kind, setKind] = useState<Kind>('Image');
-  const [thread, setThread] = useState('');
+  const [selectedThread, setSelectedThread] = useState('');
+  const [newThread, setNewThread] = useState('');
+  const [isNewThread, setIsNewThread] = useState(false);
   const [source, setSource] = useState<Source | ''>('');
   const [offeredBy, setOfferedBy] = useState('');
   const [note, setNote] = useState('');
   const [text, setText] = useState('');
   const [link, setLink] = useState('');
-  const [fileName, setFileName] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: FormEvent) => {
+  const derivedKind: Kind | null = file
+    ? detectKindFromFile(file)
+    : link.trim()
+      ? 'Link'
+      : text.trim()
+        ? 'Writing'
+        : null;
+
+  const thread = isNewThread ? newThread.trim() : selectedThread;
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !thread.trim() || !source) return;
+    setError('');
+
+    if (!title.trim() || !thread || !source) return;
+    if (!derivedKind) {
+      setError('Add a link, some writing, or a file so the archive knows what this is.');
+      return;
+    }
+
+    setSubmitting(true);
+    let imageUrl: string | undefined;
+    if (file && derivedKind === 'Image' && file.size < MAX_INLINE_IMAGE_BYTES) {
+      try {
+        imageUrl = await readFileAsDataUrl(file);
+      } catch {
+        // fall through without a preview if reading fails
+      }
+    }
 
     addEntry({
-      kind,
-      thread: thread.trim(),
+      kind: derivedKind,
+      thread,
       source,
       title: title.trim(),
       offeredBy: offeredBy.trim() || undefined,
       tagline: note.trim() || undefined,
-      excerpt: (kind === 'Writing' ? text : note || fileName || `A ${kind.toLowerCase()} offering.`).slice(0, 160),
+      excerpt: (note.trim() || text.trim() || file?.name || 'A new offering.').slice(0, 160),
       body:
-        kind === 'Writing'
-          ? text.trim() || 'No text was provided.'
-          : kind === 'Link'
-            ? link.trim()
-            : note.trim() || (fileName ? `Attached: ${fileName}` : 'No description was provided.'),
-      link: kind === 'Link' ? link.trim() : undefined,
-      imageColor: kind === 'Image' || kind === 'Object' ? 'linear-gradient(135deg, #cbd8a0, #9fb385)' : undefined,
+        derivedKind === 'Link'
+          ? link.trim()
+          : derivedKind === 'Writing'
+            ? text.trim()
+            : note.trim() || (file ? `Attached: ${file.name}` : 'No description was provided.'),
+      link: derivedKind === 'Link' ? link.trim() : undefined,
+      imageColor:
+        derivedKind !== 'Link' && derivedKind !== 'Writing' && !imageUrl
+          ? 'linear-gradient(135deg, #cbd8a0, #9fb385)'
+          : undefined,
+      imageUrl,
+      fileName: file?.name,
     });
 
     navigate('/');
   };
-
-  const needsFile = kind === 'Image' || kind === 'Sound' || kind === 'PDF' || kind === 'Object';
 
   return (
     <div className="offer-page">
@@ -62,8 +108,8 @@ export function Offer({ addEntry }: { addEntry: ReturnType<typeof useEntries>['a
 
       <h1 className="offer-heading">Offer something to the archive</h1>
       <p className="offer-description">
-        No account needed. Share an image, a recording, a piece of writing, a link — anything
-        that speaks to Making.
+        No account needed. Share an image, a recording, a video, a font, a piece of writing, a
+        link — anything that speaks to Making.
       </p>
 
       <form className="offer-form" onSubmit={handleSubmit}>
@@ -78,29 +124,53 @@ export function Offer({ addEntry }: { addEntry: ReturnType<typeof useEntries>['a
           />
         </label>
 
-        <div className="offer-field-row">
-          <label className="offer-field">
-            <span>Kind</span>
-            <select value={kind} onChange={(e) => setKind(e.target.value as Kind)}>
-              {KINDS.map((k) => (
-                <option key={k} value={k}>
-                  {k}
+        <label className="offer-field">
+          <span>Thread</span>
+          {isNewThread ? (
+            <div className="offer-thread-new">
+              <input
+                type="text"
+                placeholder="Name the new thread"
+                value={newThread}
+                onChange={(e) => setNewThread(e.target.value)}
+                required
+                autoFocus
+              />
+              <button
+                type="button"
+                className="offer-thread-toggle"
+                onClick={() => {
+                  setIsNewThread(false);
+                  setNewThread('');
+                }}
+              >
+                Choose an existing thread instead
+              </button>
+            </div>
+          ) : (
+            <select
+              value={selectedThread}
+              onChange={(e) => {
+                if (e.target.value === NEW_THREAD) {
+                  setIsNewThread(true);
+                } else {
+                  setSelectedThread(e.target.value);
+                }
+              }}
+              required
+            >
+              <option value="" disabled>
+                Choose an existing thread
+              </option>
+              {threads.map((t) => (
+                <option key={t} value={t}>
+                  {t}
                 </option>
               ))}
+              <option value={NEW_THREAD}>+ Add a new thread…</option>
             </select>
-          </label>
-
-          <label className="offer-field">
-            <span>Thread</span>
-            <input
-              type="text"
-              placeholder="e.g. toolmaking, gesture, repair"
-              value={thread}
-              onChange={(e) => setThread(e.target.value)}
-              required
-            />
-          </label>
-        </div>
+          )}
+        </label>
 
         <label className="offer-field">
           <span>Source</span>
@@ -136,43 +206,47 @@ export function Offer({ addEntry }: { addEntry: ReturnType<typeof useEntries>['a
           />
         </label>
 
-        {kind === 'Writing' && (
-          <label className="offer-field">
-            <span>Your writing</span>
-            <textarea
-              placeholder="Share the piece itself"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={6}
-              required
-            />
-          </label>
+        <label className="offer-field">
+          <span>Your writing</span>
+          <textarea
+            placeholder="If you're sharing writing, put it here"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={5}
+          />
+        </label>
+
+        <label className="offer-field">
+          <span>Link URL</span>
+          <input
+            type="url"
+            placeholder="https://…"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+          />
+        </label>
+
+        <label className="offer-field">
+          <span>Attach a file</span>
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          />
+          <span className="offer-field-hint">
+            Image, sound, video, PDF, font — anything. It'll be tagged automatically.
+          </span>
+        </label>
+
+        {derivedKind && (
+          <div className="offer-detected-kind">
+            <KindIcon kind={derivedKind} size={16} />
+            Will be tagged as <strong>{derivedKind}</strong>
+          </div>
         )}
 
-        {kind === 'Link' && (
-          <label className="offer-field">
-            <span>Link URL</span>
-            <input
-              type="url"
-              placeholder="https://…"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              required
-            />
-          </label>
-        )}
+        {error && <p className="offer-error">{error}</p>}
 
-        {needsFile && (
-          <label className="offer-field">
-            <span>{KIND_ATTACHMENT_LABEL[kind]}</span>
-            <input
-              type="file"
-              onChange={(e) => setFileName(e.target.files?.[0]?.name ?? '')}
-            />
-          </label>
-        )}
-
-        <button type="submit" className="offer-submit">
+        <button type="submit" className="offer-submit" disabled={submitting}>
           Offer to the archive
         </button>
       </form>

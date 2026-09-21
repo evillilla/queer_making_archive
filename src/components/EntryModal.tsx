@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { X, PenLine } from 'lucide-react';
+import { PenLine } from 'lucide-react';
 import type { Entry } from '../data/types';
 import { KindIcon } from './kindIcon';
+import { PixelX } from './PixelX';
 import './EntryModal.css';
 
 interface EntryModalProps {
@@ -22,7 +23,7 @@ export function EntryModal({ entry, onClose }: EntryModalProps) {
     <div className="entry-modal-overlay" onClick={onClose}>
       <div className="entry-modal" onClick={(e) => e.stopPropagation()}>
         <button type="button" className="entry-modal-close" onClick={onClose} aria-label="Close">
-          <X size={18} strokeWidth={3} />
+          <PixelX size={16} />
         </button>
         <div className="entry-modal-header">
           <div className="entry-modal-meta">
@@ -36,7 +37,11 @@ export function EntryModal({ entry, onClose }: EntryModalProps) {
         </div>
         <div className="entry-modal-body">
           {entry.tagline && <p className="entry-modal-tagline">{entry.tagline}</p>}
-          {entry.imageColor && <div className="entry-modal-image" style={{ background: entry.imageColor }} />}
+          {entry.imageUrl ? (
+            <img className="entry-modal-image" src={entry.imageUrl} alt={entry.title} />
+          ) : (
+            entry.imageColor && <div className="entry-modal-image" style={{ background: entry.imageColor }} />
+          )}
           <div className="entry-modal-text-box">
             {entry.link ? (
               <a href={entry.link} target="_blank" rel="noreferrer" className="entry-modal-link">

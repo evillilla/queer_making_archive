@@ -119,3 +119,7 @@ export const CANVAS_WIDTH = 1800;
 export const CANVAS_HEIGHT = 1200;
 
 export const THREADS = Array.from(new Set(seedEntries.map((e) => e.thread))).sort();
+
+export function mergeThreads(entries: Entry[]): string[] {
+  return Array.from(new Set([...THREADS, ...entries.map((e) => e.thread)])).sort();
+}

@@ -10,7 +10,9 @@ interface EntryCardProps {
 export function EntryCard({ entry, onOpen }: EntryCardProps) {
   return (
     <button type="button" className="entry-card" onClick={() => onOpen(entry)} style={{ left: entry.x, top: entry.y }}>
-      {entry.imageColor ? (
+      {entry.imageUrl ? (
+        <img className="entry-card-image" src={entry.imageUrl} alt={entry.title} />
+      ) : entry.imageColor ? (
         <div className="entry-card-image" style={{ background: entry.imageColor }} />
       ) : (
         <div className="entry-card-header">

@@ -23,11 +23,11 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid var(--color-accent);
-  background: var(--color-card-header-bg);
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-card-footer-bg);
   color: var(--color-maroon);
   display: flex;
   align-items: center;
@@ -71,7 +71,7 @@
 }
 
 .entry-modal-tagline {
-  font-family: var(--font-serif);
+  font-family: var(--font-body);
   font-style: italic;
   color: var(--color-maroon);
   font-size: 17px;
@@ -80,15 +80,19 @@
 
 .entry-modal-image {
   height: 220px;
+  width: 100%;
   border-radius: 10px;
   margin-bottom: 20px;
+  object-fit: cover;
+  display: block;
 }
 
 .entry-modal-text-box {
   background: var(--color-bg);
   border-radius: 10px;
   padding: 22px 24px;
-  font-family: var(--font-serif);
+  font-family: var(--font-body);
+  font-weight: 300;
   font-size: 17px;
   line-height: 1.6;
   color: var(--color-maroon);

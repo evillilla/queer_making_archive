@@ -1,12 +1,14 @@
-import { ImageIcon, Volume2, PenLine, Link2, FileText, Box } from 'lucide-react';
+import { ImageIcon, Volume2, Video, PenLine, Link2, FileText, Type, Box } from 'lucide-react';
 import type { Kind } from '../data/types';
 
 const ICONS: Record<Kind, React.ComponentType<{ size?: number; strokeWidth?: number }>> = {
   Image: ImageIcon,
   Sound: Volume2,
+  Video: Video,
   Writing: PenLine,
   Link: Link2,
   PDF: FileText,
+  Font: Type,
   Object: Box,
 };
 

@@ -3,7 +3,7 @@ import { Header } from '../components/Header';
 import { Filters, type FilterState } from '../components/Filters';
 import { EntryCanvas } from '../components/EntryCanvas';
 import { EntryModal } from '../components/EntryModal';
-import { THREADS } from '../data/entries';
+import { mergeThreads } from '../data/entries';
 import { KINDS } from '../data/types';
 import type { Entry } from '../data/types';
 
@@ -11,10 +11,7 @@ export function Archive({ entries }: { entries: Entry[] }) {
   const [filters, setFilters] = useState<FilterState>({ kind: 'All', thread: 'All', source: 'All' });
   const [openEntry, setOpenEntry] = useState<Entry | null>(null);
 
-  const threads = useMemo(
-    () => Array.from(new Set([...THREADS, ...entries.map((e) => e.thread)])).sort(),
-    [entries],
-  );
+  const threads = useMemo(() => mergeThreads(entries), [entries]);
 
   const kindCounts = useMemo(() => {
     const counts: Record<string, number> = {};
