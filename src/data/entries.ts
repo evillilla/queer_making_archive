@@ -1,4 +1,4 @@
-import type { Entry } from './types';
+import { SOURCES, type Entry } from './types';
 
 // Placeholder seed content standing in for the real archive entries.
 // Replace freely — this only exists so the canvas isn't empty.
@@ -122,4 +122,10 @@ export const THREADS = Array.from(new Set(seedEntries.map((e) => e.thread))).sor
 
 export function mergeThreads(entries: Entry[]): string[] {
   return Array.from(new Set([...THREADS, ...entries.map((e) => e.thread)])).sort();
+}
+
+export function mergeSources(entries: Entry[]): string[] {
+  const known = new Set<string>(SOURCES);
+  const custom = Array.from(new Set(entries.map((e) => e.source).filter((s) => !known.has(s)))).sort();
+  return [...SOURCES.filter((s) => s !== 'Other'), ...custom, 'Other'];
 }

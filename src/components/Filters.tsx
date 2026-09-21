@@ -1,16 +1,17 @@
-import { KINDS, SOURCES, type Kind, type Source } from '../data/types';
+import { KINDS, type Kind } from '../data/types';
 import './Filters.css';
 
 export interface FilterState {
   kind: Kind | 'All';
   thread: string | 'All';
-  source: Source | 'All';
+  source: string | 'All';
 }
 
 interface FiltersProps {
   value: FilterState;
   onChange: (next: FilterState) => void;
   threads: string[];
+  sources: string[];
   kindCounts: Record<string, number>;
   total: number;
 }
@@ -39,7 +40,7 @@ function Pill({
   );
 }
 
-export function Filters({ value, onChange, threads, kindCounts, total }: FiltersProps) {
+export function Filters({ value, onChange, threads, sources, kindCounts, total }: FiltersProps) {
   return (
     <div className="filters">
       <div className="filter-row">
@@ -85,7 +86,7 @@ export function Filters({ value, onChange, threads, kindCounts, total }: Filters
           <Pill active={value.source === 'All'} onClick={() => onChange({ ...value, source: 'All' })}>
             All
           </Pill>
-          {SOURCES.map((source) => (
+          {sources.map((source) => (
             <Pill
               key={source}
               active={value.source === source}

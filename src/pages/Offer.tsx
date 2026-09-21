@@ -1,8 +1,8 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { SOURCES, type Entry, type Kind, type Source } from '../data/types';
-import { mergeThreads } from '../data/entries';
+import { type Entry, type Kind } from '../data/types';
+import { mergeThreads, mergeSources } from '../data/entries';
 import { detectKindFromFile } from '../data/detectKind';
 import { KindIcon } from '../components/kindIcon';
 import { useEntries } from '../hooks/useEntries';
@@ -19,12 +19,15 @@ export function Offer({
 }) {
   const navigate = useNavigate();
   const threads = useMemo(() => mergeThreads(entries), [entries]);
+  const sources = useMemo(() => mergeSources(entries), [entries]);
 
   const [title, setTitle] = useState('');
   const [selectedThread, setSelectedThread] = useState('');
   const [newThread, setNewThread] = useState('');
   const [isNewThread, setIsNewThread] = useState(false);
-  const [source, setSource] = useState<Source | ''>('');
+  const [selectedSource, setSelectedSource] = useState('');
+  const [customSource, setCustomSource] = useState('');
+  const [isCustomSource, setIsCustomSource] = useState(false);
   const [offeredBy, setOfferedBy] = useState('');
   const [note, setNote] = useState('');
   const [text, setText] = useState('');
@@ -42,6 +45,7 @@ export function Offer({
         : null;
 
   const thread = isNewThread ? newThread.trim() : selectedThread;
+  const source = isCustomSource ? customSource.trim() : selectedSource;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -159,16 +163,49 @@ export function Offer({
 
         <label className="offer-field">
           <span>Source</span>
-          <select value={source} onChange={(e) => setSource(e.target.value as Source)} required>
-            <option value="" disabled>
-              Where does it come from?
-            </option>
-            {SOURCES.map((s) => (
-              <option key={s} value={s}>
-                {s}
+          {isCustomSource ? (
+            <div className="offer-thread-new">
+              <input
+                type="text"
+                placeholder="Where does it come from?"
+                value={customSource}
+                onChange={(e) => setCustomSource(e.target.value)}
+                required
+                autoFocus
+              />
+              <button
+                type="button"
+                className="offer-thread-toggle"
+                onClick={() => {
+                  setIsCustomSource(false);
+                  setCustomSource('');
+                }}
+              >
+                Choose an existing source instead
+              </button>
+            </div>
+          ) : (
+            <select
+              value={selectedSource}
+              onChange={(e) => {
+                if (e.target.value === 'Other') {
+                  setIsCustomSource(true);
+                } else {
+                  setSelectedSource(e.target.value);
+                }
+              }}
+              required
+            >
+              <option value="" disabled>
+                Where does it come from?
               </option>
-            ))}
-          </select>
+              {sources.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          )}
         </label>
 
         <label className="offer-field">

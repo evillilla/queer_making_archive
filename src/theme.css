@@ -54,3 +54,16 @@ textarea {
 a {
   color: inherit;
 }
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-maroon);
+  box-shadow: 0 0 0 2px rgba(80, 14, 41, 0.18);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-maroon);
+  outline-offset: 2px;
+}

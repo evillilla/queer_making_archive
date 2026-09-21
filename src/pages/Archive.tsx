@@ -4,7 +4,7 @@ import { Filters, type FilterState } from '../components/Filters';
 import { EntryCanvas } from '../components/EntryCanvas';
 import { EntryModal } from '../components/EntryModal';
 import { AdminAccess } from '../components/AdminAccess';
-import { mergeThreads } from '../data/entries';
+import { mergeThreads, mergeSources } from '../data/entries';
 import { KINDS } from '../data/types';
 import type { Entry } from '../data/types';
 import type { useAdminAccess } from '../hooks/useAdminAccess';
@@ -23,6 +23,7 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
   const [openEntry, setOpenEntry] = useState<Entry | null>(null);
 
   const threads = useMemo(() => mergeThreads(entries), [entries]);
+  const sources = useMemo(() => mergeSources(entries), [entries]);
 
   const kindCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -45,6 +46,7 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
         value={filters}
         onChange={setFilters}
         threads={threads}
+        sources={sources}
         kindCounts={kindCounts}
         total={entries.length}
       />
