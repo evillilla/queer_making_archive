@@ -7,13 +7,13 @@
   --color-accent-text: #3c1c10;
   --color-line-neutral: #7d7971;
 
-  --color-pill-bg: #f3f1e7;
+  --color-pill-bg: #f0f0f0;
   --color-pill-border: rgba(80, 14, 41, 0.12);
 
   --color-card-header-bg: var(--color-maroon);
-  --color-card-footer-bg: #f8f7f2;
-  --color-card-navy: #f5efe1;
-  --color-card-navy-soft: #d9c9d1;
+  --color-card-footer-bg: #f0f0f0;
+  --color-card-navy: #f0f0f0;
+  --color-card-navy-soft: rgba(240, 240, 240, 0.75);
 
   --color-input-border: rgba(80, 14, 41, 0.28);
   --color-input-placeholder: #8a6a76;
