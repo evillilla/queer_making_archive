@@ -1,13 +1,12 @@
 :root {
-  --color-bg: #d3d0c1;
+  --color-bg: #cbc7c0;
   --color-mushroom-a: #d6cfc0;
   --color-mushroom-b: #c7bfae;
 
   --color-maroon: #481433;
   --color-maroon-soft: #8a5a68;
-  --color-accent: #d7f24a;
+  --color-accent: #c7fc5f;
   --color-accent-text: #3c1c10;
-  --color-bright-yellow: #f2d43c;
 
   --color-pill-bg: #f3f1e7;
   --color-pill-border: rgba(72, 20, 51, 0.12);
