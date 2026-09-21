@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { Archive } from './pages/Archive';
 import { Offer } from './pages/Offer';
+import { ConfigWarning } from './components/ConfigWarning';
 import { useEntries } from './hooks/useEntries';
 import { useAdminAccess } from './hooks/useAdminAccess';
 
@@ -10,6 +11,7 @@ export default function App() {
 
   return (
     <HashRouter>
+      <ConfigWarning />
       <Routes>
         <Route
           path="/"

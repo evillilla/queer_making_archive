@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 
 const STORAGE_KEY = 'qma:admin-passcode';
 
@@ -16,8 +16,15 @@ export function useAdminAccess() {
   const [error, setError] = useState('');
 
   const signIn = useCallback(async (candidate: string) => {
-    if (!supabase) return;
     setError('');
+    if (!supabase) {
+      setError(
+        isSupabaseConfigured
+          ? 'Could not reach the server — check your connection and try again.'
+          : 'Backend not configured for this deployment (missing Supabase environment variables).',
+      );
+      return;
+    }
     try {
       const { data, error: rpcError } = await supabase.rpc('verify_admin_passcode', {
         p_passcode: candidate,

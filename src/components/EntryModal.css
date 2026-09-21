@@ -176,6 +176,13 @@
   margin: 0;
 }
 
+.entry-modal-report-error {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #a3253a;
+  margin: 0;
+}
+
 .entry-modal-admin {
   display: flex;
   align-items: center;

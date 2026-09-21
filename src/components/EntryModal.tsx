@@ -61,7 +61,9 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
   const [showReportForm, setShowReportForm] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportSent, setReportSent] = useState(false);
+  const [reportError, setReportError] = useState('');
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -72,19 +74,27 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
   }, [onClose]);
 
   const handleReportSubmit = async () => {
+    setReportError('');
     const ok = await onReport(reportReason.trim());
     if (ok) {
       setReportSent(true);
       setShowReportForm(false);
+    } else {
+      setReportError('Something went wrong — please try again.');
     }
   };
 
   const handleDelete = async () => {
     if (!window.confirm(`Delete "${entry.title}" for everyone? This can't be undone.`)) return;
     setDeleting(true);
+    setDeleteError('');
     const ok = await onDelete();
-    if (ok) onClose();
-    else setDeleting(false);
+    if (ok) {
+      onClose();
+    } else {
+      setDeleting(false);
+      setDeleteError('Something went wrong — please try again.');
+    }
   };
 
   return (
@@ -159,6 +169,7 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
                     Cancel
                   </button>
                 </div>
+                {reportError && <p className="entry-modal-report-error">{reportError}</p>}
               </div>
             ) : (
               <button type="button" className="entry-modal-report-link" onClick={() => setShowReportForm(true)}>
@@ -173,6 +184,7 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
                   {entry.reportCount ? `${entry.reportCount} report(s)` : 'No reports'}
                   {entry.hidden ? ' · hidden' : ''}
                 </span>
+                {deleteError && <span className="entry-modal-report-error">{deleteError}</span>}
                 <button type="button" className="entry-modal-delete" onClick={handleDelete} disabled={deleting}>
                   <TrashIcon size={13} />
                   {deleting ? 'Deleting…' : 'Delete'}

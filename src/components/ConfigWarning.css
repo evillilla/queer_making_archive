@@ -1,0 +1,13 @@
+.config-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: #a3253a;
+  color: #f8f7f2;
+  font-family: var(--font-body);
+  font-size: 13px;
+  text-align: center;
+  padding: 8px 16px;
+}
