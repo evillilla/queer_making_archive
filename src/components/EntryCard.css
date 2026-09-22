@@ -58,7 +58,14 @@
 }
 
 .entry-card-favorited {
-  box-shadow: 0 0 28px 8px rgba(254, 112, 107, 0.55), var(--shadow-card);
+  /* Two layers: a near-opaque inner ring that fully covers whatever
+     chartreuse cluster glow sits behind the card, plus a softer outer
+     spread — so this reads as the coral glow replacing the yellow one
+     right at the card, not the two blending together. */
+  box-shadow:
+    0 0 16px 6px rgba(254, 112, 107, 0.95),
+    0 0 40px 16px rgba(254, 112, 107, 0.6),
+    var(--shadow-card);
 }
 
 .entry-card-header {

@@ -20,7 +20,7 @@
   top: 24px;
   left: 24px;
   z-index: 10;
-  max-width: min(880px, calc(100vw - 48px));
+  max-width: min(880px, max(480px, 33vw), calc(100vw - 48px));
   background: var(--color-bg);
   border-radius: 20px;
   box-shadow: var(--shadow-card);
