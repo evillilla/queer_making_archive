@@ -113,7 +113,12 @@ export function EntryCanvas({
   favoriteIds,
   isFavorited,
 }: EntryCanvasProps) {
-  const clusters = useMemo(() => computeClusters(entries), [entries]);
+  // Favorited entries get their own coral glow instead — leave them out of
+  // the general chartreuse density blobs so the two don't visually mix.
+  const clusters = useMemo(
+    () => computeClusters(entries.filter((e) => !isFavorited(e.id))),
+    [entries, isFavorited],
+  );
   const edges = useMemo(
     () => [...computeEdges(entries), ...computeFavoriteTrail(favoriteIds, entries)],
     [entries, favoriteIds],
