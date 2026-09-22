@@ -103,6 +103,26 @@
   color: var(--color-maroon);
 }
 
+.entry-card-link-header {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.entry-card-favicon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.entry-card-link-domain {
+  font-size: 12px;
+  color: var(--color-maroon-soft);
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .entry-card-excerpt {
   font-size: 13px;
   line-height: 1.4;

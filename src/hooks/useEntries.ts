@@ -110,5 +110,24 @@ export function useEntries(adminPasscode: string | null) {
     [adminPasscode],
   );
 
-  return { entries, loading, addEntry, reportEntry, deleteEntry };
+  const updateThumbnail = useCallback(
+    async (entryId: string, thumbnailUrl: string) => {
+      if (!supabase || !adminPasscode) return false;
+      try {
+        const { data, error } = await supabase.rpc('admin_update_thumbnail', {
+          p_passcode: adminPasscode,
+          p_entry_id: entryId,
+          p_thumbnail_url: thumbnailUrl,
+        });
+        if (error || !data) return false;
+        setEntries((prev) => prev.map((e) => (e.id === entryId ? { ...e, thumbnailUrl } : e)));
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [adminPasscode],
+  );
+
+  return { entries, loading, addEntry, reportEntry, deleteEntry, updateThumbnail };
 }

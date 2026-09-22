@@ -7,6 +7,7 @@ import { PixelX } from './PixelX';
 import { DownloadIcon, TrashIcon, FlagIcon } from './customIcons';
 import { AudioPlayer } from './AudioPlayer';
 import { MinorActsBadge } from './MinorActsBadge';
+import { formatLinkDomain } from '../data/linkPreview';
 import './EntryModal.css';
 
 interface EntryModalProps {
@@ -15,14 +16,6 @@ interface EntryModalProps {
   isAdmin: boolean;
   onReport: (reason: string) => Promise<boolean>;
   onDelete: () => Promise<boolean>;
-}
-
-function formatLinkLabel(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, '');
-  } catch {
-    return url;
-  }
 }
 
 function isPreviewableUrl(url: string): boolean {
@@ -185,7 +178,7 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
               )}
               <a href={entry.link} target="_blank" rel="noreferrer" className="entry-modal-link">
                 <ExternalLink size={14} />
-                {formatLinkLabel(entry.link)}
+                {formatLinkDomain(entry.link)}
               </a>
               {isPreviewableUrl(entry.link) && (
                 <p className="entry-modal-iframe-hint">

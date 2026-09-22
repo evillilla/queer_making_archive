@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import type { Entry } from '../data/types';
 import { isMinorActsSource } from '../data/types';
 import { KindIcon } from './kindIcon';
 import { MinorActsBadge } from './MinorActsBadge';
 import { FavoriteButton } from './FavoriteButton';
+import { getFaviconUrl, formatLinkDomain } from '../data/linkPreview';
 import './EntryCard.css';
 
 interface EntryCardProps {
@@ -11,6 +13,69 @@ interface EntryCardProps {
   isHighlighted?: boolean;
   isFavorited: boolean;
   onToggleFavorite: (id: string) => void;
+}
+
+// Thumbnails can come from a remote URL (an og:image that might later 404,
+// or a favicon service a visitor's network happens to block) — fall back
+// to the plain icon layout rather than showing a broken image.
+function EntryCardMedia({ entry }: { entry: Entry }) {
+  const [thumbnailFailed, setThumbnailFailed] = useState(false);
+  const [faviconFailed, setFaviconFailed] = useState(false);
+
+  if (entry.kind === 'Image' && entry.fileUrl) {
+    return <img className="entry-card-image" src={entry.fileUrl} alt={entry.title} />;
+  }
+
+  const hasThumbnail = Boolean(entry.thumbnailUrl) && !thumbnailFailed;
+
+  if ((entry.kind === 'Video' || entry.kind === 'PDF' || entry.kind === 'Link') && hasThumbnail) {
+    return (
+      <img
+        className="entry-card-image"
+        src={entry.thumbnailUrl}
+        alt={entry.title}
+        onError={() => setThumbnailFailed(true)}
+      />
+    );
+  }
+
+  if (entry.kind === 'Video' || entry.kind === 'Sound' || entry.kind === 'PDF') {
+    return (
+      <div className="entry-card-icon-header">
+        <KindIcon kind={entry.kind} size={40} />
+      </div>
+    );
+  }
+
+  if (entry.kind === 'Link') {
+    const favicon = entry.link && !faviconFailed ? getFaviconUrl(entry.link) : undefined;
+    return (
+      <div className="entry-card-icon-header entry-card-link-header">
+        {favicon ? (
+          <img
+            className="entry-card-favicon"
+            src={favicon}
+            alt=""
+            onError={() => setFaviconFailed(true)}
+          />
+        ) : (
+          <KindIcon kind="Link" size={40} />
+        )}
+        {entry.link && <span className="entry-card-link-domain">{formatLinkDomain(entry.link)}</span>}
+      </div>
+    );
+  }
+
+  if (entry.imageColor) {
+    return <div className="entry-card-image" style={{ background: entry.imageColor }} />;
+  }
+
+  return (
+    <div className="entry-card-header">
+      <KindIcon kind={entry.kind} />
+      <span className="entry-card-excerpt">{entry.excerpt}</span>
+    </div>
+  );
 }
 
 export function EntryCard({ entry, onOpen, isHighlighted, isFavorited, onToggleFavorite }: EntryCardProps) {
@@ -22,22 +87,7 @@ export function EntryCard({ entry, onOpen, isHighlighted, isFavorited, onToggleF
         onClick={() => onOpen(entry)}
       >
         {entry.hidden && <span className="entry-card-hidden-tag">Hidden</span>}
-        {entry.kind === 'Image' && entry.fileUrl ? (
-          <img className="entry-card-image" src={entry.fileUrl} alt={entry.title} />
-        ) : entry.kind === 'Video' && entry.thumbnailUrl ? (
-          <img className="entry-card-image" src={entry.thumbnailUrl} alt={entry.title} />
-        ) : entry.kind === 'Video' || entry.kind === 'Sound' ? (
-          <div className="entry-card-icon-header">
-            <KindIcon kind={entry.kind} size={40} />
-          </div>
-        ) : entry.imageColor ? (
-          <div className="entry-card-image" style={{ background: entry.imageColor }} />
-        ) : (
-          <div className="entry-card-header">
-            <KindIcon kind={entry.kind} />
-            <span className="entry-card-excerpt">{entry.excerpt}</span>
-          </div>
-        )}
+        <EntryCardMedia entry={entry} />
         <div className="entry-card-footer">
           {isMinorActsSource(entry.source) && <MinorActsBadge size={13} />}
           <span className="entry-card-title">{entry.title}</span>

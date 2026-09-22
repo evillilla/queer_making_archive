@@ -171,6 +171,25 @@ $fn$;
 
 grant execute on function admin_delete_entry(text, uuid) to anon, authenticated;
 
+-- Sets an entry's thumbnail_url only when the passcode is correct — used to
+-- backfill PDF/link previews for entries that predate that feature.
+create or replace function admin_update_thumbnail(p_passcode text, p_entry_id uuid, p_thumbnail_url text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $fn$
+begin
+  if not verify_admin_passcode(p_passcode) then
+    raise exception 'invalid passcode';
+  end if;
+  update entries set thumbnail_url = p_thumbnail_url where id = p_entry_id;
+  return found;
+end;
+$fn$;
+
+grant execute on function admin_update_thumbnail(text, uuid, text) to anon, authenticated;
+
 -- ---------------------------------------------------------------------
 -- Run this last, once, with your own passcode in place of the
 -- placeholder below. Re-running it changes the passcode.

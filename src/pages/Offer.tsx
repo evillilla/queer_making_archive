@@ -4,6 +4,8 @@ import { type Entry, type Kind } from '../data/types';
 import { mergeThreads, mergeSources } from '../data/entries';
 import { detectKindFromFile, MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from '../data/detectKind';
 import { generateVideoThumbnail } from '../data/videoThumbnail';
+import { generatePdfThumbnail } from '../data/pdfThumbnail';
+import { fetchLinkPreviewImage } from '../data/linkPreview';
 import { KindIcon } from '../components/kindIcon';
 import { BackIcon } from '../components/customIcons';
 import { useEntries } from '../hooks/useEntries';
@@ -74,7 +76,13 @@ export function Offer({
     setSubmitting(true);
 
     const thumbnailUrl =
-      derivedKind === 'Video' && file ? await generateVideoThumbnail(file) : null;
+      derivedKind === 'Video' && file
+        ? await generateVideoThumbnail(file)
+        : derivedKind === 'PDF' && file
+          ? await generatePdfThumbnail(file)
+          : derivedKind === 'Link' && link.trim()
+            ? (await fetchLinkPreviewImage(link.trim())) ?? null
+            : null;
 
     const result = await addEntry(
       {

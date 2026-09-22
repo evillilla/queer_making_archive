@@ -19,7 +19,9 @@ button.admin-access-trigger {
 .admin-access-active {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
+  max-width: min(360px, calc(100vw - 32px));
   background: var(--color-maroon);
   color: var(--color-card-navy);
   border-radius: var(--radius-pill);
@@ -34,6 +36,17 @@ button.admin-access-trigger {
   cursor: pointer;
   font-size: 12px;
   padding: 0;
+}
+
+.admin-access-active button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.admin-access-backfill-result {
+  color: var(--color-card-navy-soft);
+  font-size: 11px;
+  width: 100%;
 }
 
 .admin-access-form {

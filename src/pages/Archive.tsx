@@ -18,9 +18,10 @@ interface ArchiveProps {
   admin: ReturnType<typeof useAdminAccess>;
   reportEntry: ReturnType<typeof useEntries>['reportEntry'];
   deleteEntry: ReturnType<typeof useEntries>['deleteEntry'];
+  updateThumbnail: ReturnType<typeof useEntries>['updateThumbnail'];
 }
 
-export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: ArchiveProps) {
+export function Archive({ entries, loading, admin, reportEntry, deleteEntry, updateThumbnail }: ArchiveProps) {
   const [filters, setFilters] = useState<FilterState>({
     kind: 'All',
     thread: 'All',
@@ -114,7 +115,7 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
           onDelete={() => deleteEntry(openEntry.id)}
         />
       )}
-      <AdminAccess admin={admin} />
+      <AdminAccess admin={admin} entries={entries} updateThumbnail={updateThumbnail} />
     </div>
   );
 }
