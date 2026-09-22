@@ -66,6 +66,10 @@
   flex-shrink: 0;
 }
 
+.entry-modal-favorite-toggle {
+  margin-left: auto;
+}
+
 .entry-modal-offered {
   margin: 10px 0 0;
   color: var(--color-maroon-soft);

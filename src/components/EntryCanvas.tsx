@@ -11,6 +11,9 @@ interface EntryCanvasProps {
   entries: Entry[];
   onOpen: (entry: Entry) => void;
   lastViewedEntryId: string | null;
+  favoriteIds: string[];
+  isFavorited: (id: string) => boolean;
+  onToggleFavorite: (id: string) => void;
 }
 
 interface Cluster {
@@ -71,6 +74,22 @@ function computeEdges(entries: Entry[]): Edge[] {
   ];
 }
 
+// A trail through your own favorites, in the order you saved them —
+// rather than a full mesh, which would get busy fast as favorites grow.
+function computeFavoriteTrail(favoriteIds: string[], entries: Entry[]): Edge[] {
+  const byId = new Map(entries.map((e) => [e.id, e]));
+  const edges: Edge[] = [];
+  for (let i = 0; i < favoriteIds.length - 1; i++) {
+    const a = byId.get(favoriteIds[i]);
+    const b = byId.get(favoriteIds[i + 1]);
+    if (!a || !b) continue;
+    const ca = center(a);
+    const cb = center(b);
+    edges.push({ x1: ca.x, y1: ca.y, x2: cb.x, y2: cb.y, color: 'var(--color-favorite)' });
+  }
+  return edges;
+}
+
 function computeClusters(entries: Entry[]): Cluster[] {
   const clusters: Cluster[] = [];
   for (const entry of entries) {
@@ -88,9 +107,19 @@ function computeClusters(entries: Entry[]): Cluster[] {
   return clusters;
 }
 
-export function EntryCanvas({ entries, onOpen, lastViewedEntryId }: EntryCanvasProps) {
+export function EntryCanvas({
+  entries,
+  onOpen,
+  lastViewedEntryId,
+  favoriteIds,
+  isFavorited,
+  onToggleFavorite,
+}: EntryCanvasProps) {
   const clusters = useMemo(() => computeClusters(entries), [entries]);
-  const edges = useMemo(() => computeEdges(entries), [entries]);
+  const edges = useMemo(
+    () => [...computeEdges(entries), ...computeFavoriteTrail(favoriteIds, entries)],
+    [entries, favoriteIds],
+  );
 
   const transformRef = useRef<ReactZoomPanPinchRef>(null);
   const worldRef = useRef<HTMLDivElement>(null);
@@ -172,6 +201,8 @@ export function EntryCanvas({ entries, onOpen, lastViewedEntryId }: EntryCanvasP
                 entry={entry}
                 onOpen={onOpen}
                 isHighlighted={entry.id === highlightedId}
+                isFavorited={isFavorited(entry.id)}
+                onToggleFavorite={onToggleFavorite}
               />
             ))}
             {entries.length === 0 && (

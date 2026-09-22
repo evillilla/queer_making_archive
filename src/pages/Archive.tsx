@@ -10,6 +10,7 @@ import { KINDS } from '../data/types';
 import type { Entry } from '../data/types';
 import type { useAdminAccess } from '../hooks/useAdminAccess';
 import type { useEntries } from '../hooks/useEntries';
+import { useFavorites } from '../hooks/useFavorites';
 
 interface ArchiveProps {
   entries: Entry[];
@@ -20,10 +21,16 @@ interface ArchiveProps {
 }
 
 export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: ArchiveProps) {
-  const [filters, setFilters] = useState<FilterState>({ kind: 'All', thread: 'All', source: 'All' });
+  const [filters, setFilters] = useState<FilterState>({
+    kind: 'All',
+    thread: 'All',
+    source: 'All',
+    favoritesOnly: false,
+  });
   const [openEntry, setOpenEntry] = useState<Entry | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [lastViewedEntryId, setLastViewedEntryId] = useState<string | null>(null);
+  const favorites = useFavorites();
 
   const handleOpenEntry = (entry: Entry) => {
     setOpenEntry(entry);
@@ -44,17 +51,27 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
     if (filters.kind !== 'All' && e.kind !== filters.kind) return false;
     if (filters.thread !== 'All' && e.thread !== filters.thread) return false;
     if (filters.source !== 'All' && e.source !== filters.source) return false;
+    if (filters.favoritesOnly && !favorites.isFavorited(e.id)) return false;
     return true;
   });
 
-  const activeFilterCount = [filters.kind, filters.thread, filters.source].filter((v) => v !== 'All').length;
+  const activeFilterCount =
+    [filters.kind, filters.thread, filters.source].filter((v) => v !== 'All').length +
+    (filters.favoritesOnly ? 1 : 0);
 
   return (
     <div className="archive-page">
       {loading ? (
         <p className="archive-loading">Loading the archive…</p>
       ) : (
-        <EntryCanvas entries={filteredEntries} onOpen={handleOpenEntry} lastViewedEntryId={lastViewedEntryId} />
+        <EntryCanvas
+          entries={filteredEntries}
+          onOpen={handleOpenEntry}
+          lastViewedEntryId={lastViewedEntryId}
+          favoriteIds={favorites.favoriteIds}
+          isFavorited={favorites.isFavorited}
+          onToggleFavorite={favorites.toggleFavorite}
+        />
       )}
 
       <div className="archive-overlay-panel">
@@ -83,6 +100,7 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
             sources={sources}
             kindCounts={kindCounts}
             total={entries.length}
+            favoriteCount={favorites.favoriteIds.length}
           />
         </div>
       </div>
@@ -94,6 +112,8 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
           isAdmin={admin.isAdmin}
           onReport={(reason) => reportEntry(openEntry.id, reason)}
           onDelete={() => deleteEntry(openEntry.id)}
+          isFavorited={favorites.isFavorited(openEntry.id)}
+          onToggleFavorite={() => favorites.toggleFavorite(openEntry.id)}
         />
       )}
       <AdminAccess admin={admin} />

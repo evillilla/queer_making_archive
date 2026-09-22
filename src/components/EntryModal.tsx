@@ -7,6 +7,7 @@ import { PixelX } from './PixelX';
 import { DownloadIcon, TrashIcon, FlagIcon } from './customIcons';
 import { AudioPlayer } from './AudioPlayer';
 import { MinorActsBadge } from './MinorActsBadge';
+import { FavoriteButton } from './FavoriteButton';
 import './EntryModal.css';
 
 interface EntryModalProps {
@@ -15,6 +16,8 @@ interface EntryModalProps {
   isAdmin: boolean;
   onReport: (reason: string) => Promise<boolean>;
   onDelete: () => Promise<boolean>;
+  isFavorited: boolean;
+  onToggleFavorite: () => void;
 }
 
 function formatLinkLabel(url: string): string {
@@ -104,7 +107,15 @@ function EntryMedia({ entry }: { entry: Entry }) {
   return null;
 }
 
-export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: EntryModalProps) {
+export function EntryModal({
+  entry,
+  onClose,
+  isAdmin,
+  onReport,
+  onDelete,
+  isFavorited,
+  onToggleFavorite,
+}: EntryModalProps) {
   const [showReportForm, setShowReportForm] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportSent, setReportSent] = useState(false);
@@ -156,6 +167,12 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
             <span>
               {entry.kind.toUpperCase()} &middot; {entry.thread.toUpperCase()}
             </span>
+            <FavoriteButton
+              isFavorited={isFavorited}
+              onToggle={onToggleFavorite}
+              size={16}
+              className="entry-modal-favorite-toggle"
+            />
           </div>
           <h2 className="entry-modal-title">
             {isMinorActsSource(entry.source) && <MinorActsBadge size={20} />}

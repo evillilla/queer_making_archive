@@ -1,6 +1,11 @@
-.entry-card {
+.entry-card-wrapper {
   position: absolute;
   width: 220px;
+}
+
+.entry-card {
+  position: relative;
+  width: 100%;
   display: flex;
   flex-direction: column;
   background: var(--color-card-footer-bg);
@@ -55,6 +60,20 @@
   font-family: var(--font-body);
   padding: 2px 8px;
   border-radius: var(--radius-pill);
+}
+
+.entry-card-favorited {
+  box-shadow: 0 0 28px 8px rgba(254, 112, 107, 0.55), var(--shadow-card);
+}
+
+.entry-card-favorite-toggle {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 2;
+  background: rgba(240, 240, 240, 0.85);
+  border-radius: 50%;
+  padding: 4px;
 }
 
 .entry-card-header {

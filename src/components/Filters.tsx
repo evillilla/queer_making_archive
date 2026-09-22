@@ -1,5 +1,5 @@
 import { KINDS, type Kind } from '../data/types';
-import { PlaceIcon } from './customIcons';
+import { PlaceIcon, SaveIcon, SavedIcon } from './customIcons';
 import './Filters.css';
 
 // Icons for known threads — threads are otherwise free-form/user-added, so
@@ -12,6 +12,7 @@ export interface FilterState {
   kind: Kind | 'All';
   thread: string | 'All';
   source: string | 'All';
+  favoritesOnly: boolean;
 }
 
 interface FiltersProps {
@@ -21,6 +22,7 @@ interface FiltersProps {
   sources: string[];
   kindCounts: Record<string, number>;
   total: number;
+  favoriteCount: number;
 }
 
 function Pill({
@@ -47,9 +49,23 @@ function Pill({
   );
 }
 
-export function Filters({ value, onChange, threads, sources, kindCounts, total }: FiltersProps) {
+export function Filters({ value, onChange, threads, sources, kindCounts, total, favoriteCount }: FiltersProps) {
   return (
     <div className="filters">
+      <div className="filter-row">
+        <span className="filter-label">Saved</span>
+        <div className="filter-pills">
+          <Pill
+            active={value.favoritesOnly}
+            onClick={() => onChange({ ...value, favoritesOnly: !value.favoritesOnly })}
+            count={favoriteCount}
+          >
+            {value.favoritesOnly ? <SavedIcon size={12} /> : <SaveIcon size={12} />}
+            My favorites
+          </Pill>
+        </div>
+      </div>
+
       <div className="filter-row">
         <span className="filter-label">Kind</span>
         <div className="filter-pills">

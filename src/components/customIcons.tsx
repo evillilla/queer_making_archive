@@ -129,6 +129,38 @@ export function ObjectIcon({ size }: { size?: number }) {
   );
 }
 
+export function SaveIcon({ size }: { size?: number }) {
+  return (
+    <IconBase viewBox="0 0 78.4 96.3" size={size}>
+      <polygon points="44.2 62.9 44.2 52.9 34.2 52.9 34.2 62.9 24.2 62.9 24.2 72.9 34.2 72.9 34.2 62.9 44.2 62.9 44.2 72.9 54.2 72.9 54.2 62.9 44.2 62.9" />
+      <path d="M74.2,2.8H4.2c0,0,0,0,0,0,0,30,0,60,0,90h10c0-3.3,0-6.7,0-10h10v-10h-10c0-20,0-40,0-60.1h50c0,20,0,40,0,60.1h-10v10h10c0,3.3,0,6.7,0,10h10c0-3.3,0-90.1,0-90.1Z" />
+    </IconBase>
+  );
+}
+
+// Two-tone by design (coral fill + maroon outline) to match the "saved"
+// icon exactly as provided, rather than flattened to a single currentColor.
+export function SavedIcon({ size = 16 }: { size?: number }) {
+  const vw = 78.4;
+  const vh = 96.3;
+  return (
+    <svg width={size * (vw / vh)} height={size} viewBox={`0 0 ${vw} ${vh}`} xmlns="http://www.w3.org/2000/svg">
+      <polygon
+        fill="var(--color-maroon)"
+        points="54.2 62.9 54.2 72.9 44.2 72.9 44.2 62.9 34.2 62.9 34.2 72.9 24.2 72.9 24.2 62.9 34.2 62.9 34.2 52.9 44.2 52.9 44.2 62.9 54.2 62.9"
+      />
+      <polygon
+        fill="var(--color-favorite)"
+        points="64.2 12.8 64.2 72.9 54.2 72.9 54.2 62.9 44.2 62.9 44.2 52.9 34.2 52.9 34.2 62.9 24.2 62.9 24.2 72.9 14.2 72.9 14.2 12.8 64.2 12.8"
+      />
+      <path
+        fill="var(--color-maroon)"
+        d="M74.2,2.8s0,86.7,0,90.1h-10v-10h-10v-10h10V12.8H14.2v60.1h10v10h-10v10H4.2c0-23.7,0-47.3,0-71V2.8h70Z"
+      />
+    </svg>
+  );
+}
+
 export function ShieldIcon({ size }: { size?: number }) {
   return (
     <IconBase viewBox="0 0 100 125" size={size}>
