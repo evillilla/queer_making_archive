@@ -7,6 +7,7 @@ import { PixelX } from './PixelX';
 import { DownloadIcon, TrashIcon, FlagIcon } from './customIcons';
 import { AudioPlayer } from './AudioPlayer';
 import { MinorActsBadge } from './MinorActsBadge';
+import { FavoriteButton } from './FavoriteButton';
 import { formatLinkDomain } from '../data/linkPreview';
 import './EntryModal.css';
 
@@ -16,6 +17,8 @@ interface EntryModalProps {
   isAdmin: boolean;
   onReport: (reason: string) => Promise<boolean>;
   onDelete: () => Promise<boolean>;
+  isFavorited: boolean;
+  onToggleFavorite: () => void;
 }
 
 function isPreviewableUrl(url: string): boolean {
@@ -97,7 +100,15 @@ function EntryMedia({ entry }: { entry: Entry }) {
   return null;
 }
 
-export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: EntryModalProps) {
+export function EntryModal({
+  entry,
+  onClose,
+  isAdmin,
+  onReport,
+  onDelete,
+  isFavorited,
+  onToggleFavorite,
+}: EntryModalProps) {
   const [showReportForm, setShowReportForm] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportSent, setReportSent] = useState(false);
@@ -143,6 +154,12 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
         <button type="button" className="entry-modal-close" onClick={onClose} aria-label="Close">
           <PixelX size={16} />
         </button>
+        <FavoriteButton
+          isFavorited={isFavorited}
+          onToggle={onToggleFavorite}
+          size={18}
+          className="entry-modal-favorite-toggle"
+        />
         <div className="entry-modal-header">
           <div className="entry-modal-meta">
             <span className="entry-modal-meta-icon">

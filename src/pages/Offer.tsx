@@ -12,6 +12,7 @@ import { useEntries } from '../hooks/useEntries';
 import './Offer.css';
 
 const NEW_THREAD = '__new__';
+const NEW_SOURCE = '__new_source__';
 
 export function Offer({
   entries,
@@ -214,7 +215,7 @@ export function Offer({
             <select
               value={selectedSource}
               onChange={(e) => {
-                if (e.target.value === 'Other') {
+                if (e.target.value === NEW_SOURCE) {
                   setIsCustomSource(true);
                 } else {
                   setSelectedSource(e.target.value);
@@ -230,6 +231,7 @@ export function Offer({
                   {s}
                 </option>
               ))}
+              <option value={NEW_SOURCE}>+ Name a different source…</option>
             </select>
           )}
         </label>

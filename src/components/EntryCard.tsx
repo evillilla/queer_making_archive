@@ -3,7 +3,6 @@ import type { Entry } from '../data/types';
 import { isMinorActsSource } from '../data/types';
 import { KindIcon } from './kindIcon';
 import { MinorActsBadge } from './MinorActsBadge';
-import { FavoriteButton } from './FavoriteButton';
 import { getFaviconUrl, formatLinkDomain } from '../data/linkPreview';
 import './EntryCard.css';
 
@@ -12,7 +11,6 @@ interface EntryCardProps {
   onOpen: (entry: Entry) => void;
   isHighlighted?: boolean;
   isFavorited: boolean;
-  onToggleFavorite: (id: string) => void;
 }
 
 // Thumbnails can come from a remote URL (an og:image that might later 404,
@@ -78,27 +76,20 @@ function EntryCardMedia({ entry }: { entry: Entry }) {
   );
 }
 
-export function EntryCard({ entry, onOpen, isHighlighted, isFavorited, onToggleFavorite }: EntryCardProps) {
+export function EntryCard({ entry, onOpen, isHighlighted, isFavorited }: EntryCardProps) {
   return (
-    <div className="entry-card-wrapper" style={{ left: entry.x, top: entry.y }}>
-      <button
-        type="button"
-        className={`entry-card${entry.hidden ? ' entry-card-hidden' : ''}${isHighlighted ? ' entry-card-highlighted' : ''}${isFavorited ? ' entry-card-favorited' : ''}`}
-        onClick={() => onOpen(entry)}
-      >
-        {entry.hidden && <span className="entry-card-hidden-tag">Hidden</span>}
-        <EntryCardMedia entry={entry} />
-        <div className="entry-card-footer">
-          {isMinorActsSource(entry.source) && <MinorActsBadge size={13} />}
-          <span className="entry-card-title">{entry.title}</span>
-        </div>
-      </button>
-      <FavoriteButton
-        isFavorited={isFavorited}
-        onToggle={() => onToggleFavorite(entry.id)}
-        size={14}
-        className="entry-card-favorite-toggle"
-      />
-    </div>
+    <button
+      type="button"
+      className={`entry-card${entry.hidden ? ' entry-card-hidden' : ''}${isHighlighted ? ' entry-card-highlighted' : ''}${isFavorited ? ' entry-card-favorited' : ''}`}
+      onClick={() => onOpen(entry)}
+      style={{ left: entry.x, top: entry.y }}
+    >
+      {entry.hidden && <span className="entry-card-hidden-tag">Hidden</span>}
+      <EntryCardMedia entry={entry} />
+      <div className="entry-card-footer">
+        {isMinorActsSource(entry.source) && <MinorActsBadge size={13} />}
+        <span className="entry-card-title">{entry.title}</span>
+      </div>
+    </button>
   );
 }

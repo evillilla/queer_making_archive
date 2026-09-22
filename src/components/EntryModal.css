@@ -11,7 +11,7 @@
 
 .entry-modal {
   position: relative;
-  width: min(680px, 100%);
+  width: min(680px, 100%, max(33vw, 340px));
   max-height: 85vh;
   overflow-y: auto;
   background: var(--color-card-footer-bg);
@@ -35,9 +35,20 @@
   cursor: pointer;
 }
 
+.entry-modal-favorite-toggle {
+  position: absolute;
+  top: 16px;
+  right: 56px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .entry-modal-header {
   background: var(--color-card-footer-bg);
-  padding: 28px 60px 24px 28px;
+  padding: 28px 96px 24px 28px;
 }
 
 .entry-modal-meta {

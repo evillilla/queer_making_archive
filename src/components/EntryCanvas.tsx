@@ -13,7 +13,6 @@ interface EntryCanvasProps {
   lastViewedEntryId: string | null;
   favoriteIds: string[];
   isFavorited: (id: string) => boolean;
-  onToggleFavorite: (id: string) => void;
 }
 
 interface Cluster {
@@ -113,7 +112,6 @@ export function EntryCanvas({
   lastViewedEntryId,
   favoriteIds,
   isFavorited,
-  onToggleFavorite,
 }: EntryCanvasProps) {
   const clusters = useMemo(() => computeClusters(entries), [entries]);
   const edges = useMemo(
@@ -202,7 +200,6 @@ export function EntryCanvas({
                 onOpen={onOpen}
                 isHighlighted={entry.id === highlightedId}
                 isFavorited={isFavorited(entry.id)}
-                onToggleFavorite={onToggleFavorite}
               />
             ))}
             {entries.length === 0 && (

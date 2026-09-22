@@ -71,7 +71,6 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry, upd
           lastViewedEntryId={lastViewedEntryId}
           favoriteIds={favorites.favoriteIds}
           isFavorited={favorites.isFavorited}
-          onToggleFavorite={favorites.toggleFavorite}
         />
       )}
 
@@ -113,6 +112,8 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry, upd
           isAdmin={admin.isAdmin}
           onReport={(reason) => reportEntry(openEntry.id, reason)}
           onDelete={() => deleteEntry(openEntry.id)}
+          isFavorited={favorites.isFavorited(openEntry.id)}
+          onToggleFavorite={() => favorites.toggleFavorite(openEntry.id)}
         />
       )}
       <AdminAccess admin={admin} entries={entries} updateThumbnail={updateThumbnail} />
