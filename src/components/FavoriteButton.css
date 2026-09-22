@@ -8,6 +8,11 @@
   margin: 0;
   cursor: pointer;
   line-height: 0;
+  /* Buttons don't inherit text color from their parent by default in
+     browsers, unlike most elements — without this, the unsaved icon's
+     currentColor falls back to the browser's default button text (black)
+     instead of the maroon it's meant to have. */
+  color: var(--color-maroon);
 }
 
 .favorite-button:hover {
