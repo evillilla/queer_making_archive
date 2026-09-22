@@ -40,3 +40,26 @@
   font-size: 16px;
   white-space: nowrap;
 }
+
+.entry-canvas-find-me {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--color-pill-bg);
+  border: 1px solid var(--color-pill-border);
+  color: var(--color-maroon-soft);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.entry-canvas-find-me:hover {
+  color: var(--color-maroon);
+}

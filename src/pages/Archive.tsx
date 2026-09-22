@@ -23,6 +23,12 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
   const [filters, setFilters] = useState<FilterState>({ kind: 'All', thread: 'All', source: 'All' });
   const [openEntry, setOpenEntry] = useState<Entry | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [lastViewedEntryId, setLastViewedEntryId] = useState<string | null>(null);
+
+  const handleOpenEntry = (entry: Entry) => {
+    setOpenEntry(entry);
+    setLastViewedEntryId(entry.id);
+  };
 
   const threads = useMemo(() => mergeThreads(entries), [entries]);
   const sources = useMemo(() => mergeSources(entries), [entries]);
@@ -48,7 +54,7 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry }: A
       {loading ? (
         <p className="archive-loading">Loading the archive…</p>
       ) : (
-        <EntryCanvas entries={filteredEntries} onOpen={setOpenEntry} />
+        <EntryCanvas entries={filteredEntries} onOpen={handleOpenEntry} lastViewedEntryId={lastViewedEntryId} />
       )}
 
       <div className="archive-overlay-panel">

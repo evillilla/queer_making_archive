@@ -1,17 +1,20 @@
 import type { Entry } from '../data/types';
+import { isMinorActsSource } from '../data/types';
 import { KindIcon } from './kindIcon';
+import { MinorActsBadge } from './MinorActsBadge';
 import './EntryCard.css';
 
 interface EntryCardProps {
   entry: Entry;
   onOpen: (entry: Entry) => void;
+  isHighlighted?: boolean;
 }
 
-export function EntryCard({ entry, onOpen }: EntryCardProps) {
+export function EntryCard({ entry, onOpen, isHighlighted }: EntryCardProps) {
   return (
     <button
       type="button"
-      className={`entry-card${entry.hidden ? ' entry-card-hidden' : ''}`}
+      className={`entry-card${entry.hidden ? ' entry-card-hidden' : ''}${isHighlighted ? ' entry-card-highlighted' : ''}`}
       onClick={() => onOpen(entry)}
       style={{ left: entry.x, top: entry.y }}
     >
@@ -33,6 +36,7 @@ export function EntryCard({ entry, onOpen }: EntryCardProps) {
         </div>
       )}
       <div className="entry-card-footer">
+        {isMinorActsSource(entry.source) && <MinorActsBadge size={13} />}
         <span className="entry-card-title">{entry.title}</span>
       </div>
     </button>

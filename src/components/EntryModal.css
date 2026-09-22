@@ -57,6 +57,13 @@
   font-size: clamp(24px, 3vw, 34px);
   color: var(--color-maroon);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.entry-modal-title .minor-acts-badge {
+  flex-shrink: 0;
 }
 
 .entry-modal-offered {
@@ -235,6 +242,11 @@
   text-decoration: underline;
   color: var(--color-maroon);
   font-weight: 700;
+}
+
+.entry-modal-download {
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .entry-modal-pdf-preview {

@@ -5,6 +5,11 @@ export type Kind = (typeof KINDS)[number];
 // "Other", the same way custom threads work.
 export const SOURCES = ['Minor Acts 1.0', 'Minor Acts 2.0', 'Other'] as const;
 
+const MINOR_ACTS_SOURCES = new Set(['Minor Acts 1.0', 'Minor Acts 2.0']);
+export function isMinorActsSource(source: string): boolean {
+  return MINOR_ACTS_SOURCES.has(source);
+}
+
 export interface Entry {
   id: string;
   kind: Kind;

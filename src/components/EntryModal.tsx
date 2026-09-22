@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { ExternalLink } from 'lucide-react';
 import type { Entry } from '../data/types';
+import { isMinorActsSource } from '../data/types';
 import { KindIcon } from './kindIcon';
 import { PixelX } from './PixelX';
 import { DownloadIcon, TrashIcon, FlagIcon } from './customIcons';
 import { AudioPlayer } from './AudioPlayer';
+import { MinorActsBadge } from './MinorActsBadge';
 import './EntryModal.css';
 
 interface EntryModalProps {
@@ -31,19 +33,51 @@ function isPreviewableUrl(url: string): boolean {
   }
 }
 
+function DownloadLink({ entry }: { entry: Entry }) {
+  if (!entry.fileUrl) return null;
+  return (
+    <a
+      href={entry.fileUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="entry-modal-link entry-modal-download"
+    >
+      <DownloadIcon size={14} />
+      Download
+    </a>
+  );
+}
+
 function EntryMedia({ entry }: { entry: Entry }) {
   if (entry.kind === 'Image') {
-    if (entry.fileUrl) return <img className="entry-modal-image" src={entry.fileUrl} alt={entry.title} />;
+    if (entry.fileUrl) {
+      return (
+        <>
+          <img className="entry-modal-image" src={entry.fileUrl} alt={entry.title} />
+          <DownloadLink entry={entry} />
+        </>
+      );
+    }
     if (entry.imageColor) return <div className="entry-modal-image" style={{ background: entry.imageColor }} />;
     return null;
   }
 
   if (entry.kind === 'Sound' && entry.fileUrl) {
-    return <AudioPlayer src={entry.fileUrl} />;
+    return (
+      <>
+        <AudioPlayer src={entry.fileUrl} />
+        <DownloadLink entry={entry} />
+      </>
+    );
   }
 
   if (entry.kind === 'Video' && entry.fileUrl) {
-    return <video className="entry-modal-video" controls src={entry.fileUrl} poster={entry.thumbnailUrl} />;
+    return (
+      <>
+        <video className="entry-modal-video" controls src={entry.fileUrl} poster={entry.thumbnailUrl} />
+        <DownloadLink entry={entry} />
+      </>
+    );
   }
 
   if (entry.kind === 'PDF' && entry.fileUrl) {
@@ -123,7 +157,10 @@ export function EntryModal({ entry, onClose, isAdmin, onReport, onDelete }: Entr
               {entry.kind.toUpperCase()} &middot; {entry.thread.toUpperCase()}
             </span>
           </div>
-          <h2 className="entry-modal-title">{entry.title}</h2>
+          <h2 className="entry-modal-title">
+            {isMinorActsSource(entry.source) && <MinorActsBadge size={20} />}
+            {entry.title}
+          </h2>
           {entry.offeredBy && <p className="entry-modal-offered">offered by {entry.offeredBy}</p>}
         </div>
         <div className="entry-modal-body">

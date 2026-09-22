@@ -26,6 +26,24 @@
   opacity: 0.75;
 }
 
+.entry-card-highlighted {
+  animation: entry-card-pulse 1s ease-in-out 4;
+  z-index: 5;
+}
+
+@keyframes entry-card-pulse {
+  0%, 100% {
+    box-shadow: var(--shadow-card);
+    outline: 3px solid transparent;
+    outline-offset: 4px;
+  }
+  50% {
+    box-shadow: 0 0 0 6px var(--color-accent), var(--shadow-card);
+    outline: 3px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+}
+
 .entry-card-hidden-tag {
   position: absolute;
   top: 6px;
@@ -86,4 +104,9 @@
   font-weight: 700;
   font-size: 14px;
   color: var(--color-maroon);
+}
+
+.minor-acts-badge {
+  flex-shrink: 0;
+  display: block;
 }

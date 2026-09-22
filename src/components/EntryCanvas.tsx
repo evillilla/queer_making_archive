@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { TransformWrapper, TransformComponent, type ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import type { Entry } from '../data/types';
+import { isMinorActsSource } from '../data/types';
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from '../data/entries';
 import { EntryCard } from './EntryCard';
+import { PlaceIcon } from './customIcons';
 import './EntryCanvas.css';
 
 interface EntryCanvasProps {
   entries: Entry[];
   onOpen: (entry: Entry) => void;
+  lastViewedEntryId: string | null;
 }
 
 interface Cluster {
@@ -17,7 +20,7 @@ interface Cluster {
 }
 
 const CLUSTER_DISTANCE = 420;
-const MINOR_ACTS_SOURCES = new Set(['Minor Acts 1.0', 'Minor Acts 2.0']);
+const HIGHLIGHT_DURATION_MS = 4000;
 
 interface Edge {
   x1: number;
@@ -59,7 +62,7 @@ function edgesWithinGroups(groups: Map<unknown, Entry[]>, color: string): Edge[]
 function computeEdges(entries: Entry[]): Edge[] {
   const byThread = groupBy(entries, (e) => e.thread);
   const byMinorActsSource = groupBy(
-    entries.filter((e) => MINOR_ACTS_SOURCES.has(e.source)),
+    entries.filter((e) => isMinorActsSource(e.source)),
     (e) => e.source,
   );
   return [
@@ -85,13 +88,43 @@ function computeClusters(entries: Entry[]): Cluster[] {
   return clusters;
 }
 
-export function EntryCanvas({ entries, onOpen }: EntryCanvasProps) {
+export function EntryCanvas({ entries, onOpen, lastViewedEntryId }: EntryCanvasProps) {
   const clusters = useMemo(() => computeClusters(entries), [entries]);
   const edges = useMemo(() => computeEdges(entries), [entries]);
+
+  const transformRef = useRef<ReactZoomPanPinchRef>(null);
+  const worldRef = useRef<HTMLDivElement>(null);
+  const hasFitInitially = useRef(false);
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+  // Fits the view to wherever the cards actually are, instead of the
+  // canvas's fixed geometric center — with entries scattered across a
+  // large world, that center can easily land in empty space (worst on
+  // narrow/mobile viewports, where the visible slice is smallest).
+  const fitAllCards = (animationTime: number) => {
+    const cards = worldRef.current?.querySelectorAll<HTMLElement>('.entry-card');
+    if (!transformRef.current || !cards || cards.length === 0) return;
+    transformRef.current.zoomToElement(Array.from(cards), { maxScale: 1.1, animationTime });
+  };
+
+  useEffect(() => {
+    if (hasFitInitially.current || entries.length === 0) return;
+    hasFitInitially.current = true;
+    const frame = requestAnimationFrame(() => fitAllCards(0));
+    return () => cancelAnimationFrame(frame);
+  }, [entries]);
+
+  const handleFindMe = () => {
+    if (!lastViewedEntryId) return;
+    fitAllCards(500);
+    setHighlightedId(lastViewedEntryId);
+    window.setTimeout(() => setHighlightedId(null), HIGHLIGHT_DURATION_MS);
+  };
 
   return (
     <div className="entry-canvas-viewport">
       <TransformWrapper
+        ref={transformRef}
         initialScale={1}
         minScale={0.4}
         maxScale={2.5}
@@ -103,7 +136,7 @@ export function EntryCanvas({ entries, onOpen }: EntryCanvasProps) {
           wrapperStyle={{ width: '100%', height: '100%' }}
           contentStyle={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
         >
-          <div className="entry-canvas-world" style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}>
+          <div ref={worldRef} className="entry-canvas-world" style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}>
             {clusters.map((cluster, i) => {
               const size = 380 + cluster.count * 90;
               return (
@@ -134,7 +167,12 @@ export function EntryCanvas({ entries, onOpen }: EntryCanvasProps) {
               ))}
             </svg>
             {entries.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} onOpen={onOpen} />
+              <EntryCard
+                key={entry.id}
+                entry={entry}
+                onOpen={onOpen}
+                isHighlighted={entry.id === highlightedId}
+              />
             ))}
             {entries.length === 0 && (
               <div className="entry-canvas-empty">No offerings match these filters yet.</div>
@@ -142,6 +180,13 @@ export function EntryCanvas({ entries, onOpen }: EntryCanvasProps) {
           </div>
         </TransformComponent>
       </TransformWrapper>
+
+      {lastViewedEntryId && (
+        <button type="button" className="entry-canvas-find-me" onClick={handleFindMe}>
+          <PlaceIcon size={14} />
+          Find me
+        </button>
+      )}
     </div>
   );
 }
