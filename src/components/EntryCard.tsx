@@ -11,6 +11,11 @@ interface EntryCardProps {
   onOpen: (entry: Entry) => void;
   isHighlighted?: boolean;
   isFavorited: boolean;
+  isAdmin: boolean;
+}
+
+function reportLabel(count: number): string {
+  return `${count} report${count === 1 ? '' : 's'}`;
 }
 
 // Thumbnails can come from a remote URL (an og:image that might later 404,
@@ -76,7 +81,8 @@ function EntryCardMedia({ entry }: { entry: Entry }) {
   );
 }
 
-export function EntryCard({ entry, onOpen, isHighlighted, isFavorited }: EntryCardProps) {
+export function EntryCard({ entry, onOpen, isHighlighted, isFavorited, isAdmin }: EntryCardProps) {
+  const showReportTag = isAdmin && Boolean(entry.reportCount);
   return (
     <button
       type="button"
@@ -84,7 +90,15 @@ export function EntryCard({ entry, onOpen, isHighlighted, isFavorited }: EntryCa
       onClick={() => onOpen(entry)}
       style={{ left: entry.x, top: entry.y }}
     >
-      {entry.hidden && <span className="entry-card-hidden-tag">Hidden</span>}
+      {entry.hidden ? (
+        <span className="entry-card-hidden-tag">
+          Hidden{showReportTag ? ` · ${reportLabel(entry.reportCount!)}` : ''}
+        </span>
+      ) : (
+        showReportTag && (
+          <span className="entry-card-report-tag">{reportLabel(entry.reportCount!)}</span>
+        )
+      )}
       <EntryCardMedia entry={entry} />
       <div className="entry-card-footer">
         {isMinorActsSource(entry.source) && <MinorActsBadge size={13} />}

@@ -13,6 +13,7 @@ interface EntryCanvasProps {
   lastViewedEntryId: string | null;
   favoriteIds: string[];
   isFavorited: (id: string) => boolean;
+  isAdmin: boolean;
 }
 
 interface Cluster {
@@ -112,6 +113,7 @@ export function EntryCanvas({
   lastViewedEntryId,
   favoriteIds,
   isFavorited,
+  isAdmin,
 }: EntryCanvasProps) {
   // Favorited entries get their own coral glow instead — leave them out of
   // the general chartreuse density blobs so the two don't visually mix.
@@ -205,6 +207,7 @@ export function EntryCanvas({
                 onOpen={onOpen}
                 isHighlighted={entry.id === highlightedId}
                 isFavorited={isFavorited(entry.id)}
+                isAdmin={isAdmin}
               />
             ))}
             {entries.length === 0 && (

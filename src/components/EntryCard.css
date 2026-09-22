@@ -57,6 +57,19 @@
   border-radius: var(--radius-pill);
 }
 
+.entry-card-report-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 1;
+  background: #a3253a;
+  color: #f0f0f0;
+  font-size: 10px;
+  font-family: var(--font-body);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
 .entry-card-favorited {
   /* Two layers: a near-opaque inner ring that fully covers whatever
      chartreuse cluster glow sits behind the card, plus a softer outer

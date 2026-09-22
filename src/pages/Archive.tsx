@@ -27,6 +27,7 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry, upd
     thread: 'All',
     source: 'All',
     favoritesOnly: false,
+    reportedOnly: false,
   });
   const [openEntry, setOpenEntry] = useState<Entry | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
@@ -48,17 +49,24 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry, upd
     return counts;
   }, [entries]);
 
+  const reportedCount = useMemo(
+    () => entries.filter((e) => e.reportCount && e.reportCount > 0).length,
+    [entries],
+  );
+
   const filteredEntries = entries.filter((e) => {
     if (filters.kind !== 'All' && e.kind !== filters.kind) return false;
     if (filters.thread !== 'All' && e.thread !== filters.thread) return false;
     if (filters.source !== 'All' && e.source !== filters.source) return false;
     if (filters.favoritesOnly && !favorites.isFavorited(e.id)) return false;
+    if (admin.isAdmin && filters.reportedOnly && !(e.reportCount && e.reportCount > 0)) return false;
     return true;
   });
 
   const activeFilterCount =
     [filters.kind, filters.thread, filters.source].filter((v) => v !== 'All').length +
-    (filters.favoritesOnly ? 1 : 0);
+    (filters.favoritesOnly ? 1 : 0) +
+    (admin.isAdmin && filters.reportedOnly ? 1 : 0);
 
   return (
     <div className="archive-page">
@@ -71,6 +79,7 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry, upd
           lastViewedEntryId={lastViewedEntryId}
           favoriteIds={favorites.favoriteIds}
           isFavorited={favorites.isFavorited}
+          isAdmin={admin.isAdmin}
         />
       )}
 
@@ -101,6 +110,8 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry, upd
             kindCounts={kindCounts}
             total={entries.length}
             favoriteCount={favorites.favoriteIds.length}
+            isAdmin={admin.isAdmin}
+            reportedCount={reportedCount}
           />
         </div>
       </div>

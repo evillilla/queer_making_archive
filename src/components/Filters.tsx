@@ -1,5 +1,5 @@
 import { KINDS, type Kind } from '../data/types';
-import { PlaceIcon, SaveIcon, SavedIcon } from './customIcons';
+import { PlaceIcon, SaveIcon, SavedIcon, FlagIcon } from './customIcons';
 import './Filters.css';
 
 // Icons for known threads — threads are otherwise free-form/user-added, so
@@ -13,6 +13,7 @@ export interface FilterState {
   thread: string | 'All';
   source: string | 'All';
   favoritesOnly: boolean;
+  reportedOnly: boolean;
 }
 
 interface FiltersProps {
@@ -23,6 +24,8 @@ interface FiltersProps {
   kindCounts: Record<string, number>;
   total: number;
   favoriteCount: number;
+  isAdmin: boolean;
+  reportedCount: number;
 }
 
 function Pill({
@@ -49,9 +52,35 @@ function Pill({
   );
 }
 
-export function Filters({ value, onChange, threads, sources, kindCounts, total, favoriteCount }: FiltersProps) {
+export function Filters({
+  value,
+  onChange,
+  threads,
+  sources,
+  kindCounts,
+  total,
+  favoriteCount,
+  isAdmin,
+  reportedCount,
+}: FiltersProps) {
   return (
     <div className="filters">
+      {isAdmin && (
+        <div className="filter-row">
+          <span className="filter-label">Admin</span>
+          <div className="filter-pills">
+            <Pill
+              active={value.reportedOnly}
+              onClick={() => onChange({ ...value, reportedOnly: !value.reportedOnly })}
+              count={reportedCount}
+            >
+              <FlagIcon size={12} />
+              Reported
+            </Pill>
+          </div>
+        </div>
+      )}
+
       <div className="filter-row">
         <span className="filter-label">Kind</span>
         <div className="filter-pills">
