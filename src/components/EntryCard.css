@@ -100,7 +100,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-pill-bg);
-  color: var(--color-maroon-soft);
+  color: var(--color-maroon);
 }
 
 .entry-card-excerpt {

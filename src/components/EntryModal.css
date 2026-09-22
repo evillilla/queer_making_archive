@@ -51,6 +51,11 @@
   margin-bottom: 12px;
 }
 
+.entry-modal-meta-icon {
+  display: inline-flex;
+  color: var(--color-maroon);
+}
+
 .entry-modal-title {
   font-family: var(--font-serif);
   font-weight: 700;
@@ -64,10 +69,6 @@
 
 .entry-modal-title .minor-acts-badge {
   flex-shrink: 0;
-}
-
-.entry-modal-favorite-toggle {
-  margin-left: auto;
 }
 
 .entry-modal-offered {

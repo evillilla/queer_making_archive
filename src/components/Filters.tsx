@@ -53,20 +53,6 @@ export function Filters({ value, onChange, threads, sources, kindCounts, total, 
   return (
     <div className="filters">
       <div className="filter-row">
-        <span className="filter-label">Saved</span>
-        <div className="filter-pills">
-          <Pill
-            active={value.favoritesOnly}
-            onClick={() => onChange({ ...value, favoritesOnly: !value.favoritesOnly })}
-            count={favoriteCount}
-          >
-            {value.favoritesOnly ? <SavedIcon size={12} /> : <SaveIcon size={12} />}
-            My favorites
-          </Pill>
-        </div>
-      </div>
-
-      <div className="filter-row">
         <span className="filter-label">Kind</span>
         <div className="filter-pills">
           <Pill active={value.kind === 'All'} onClick={() => onChange({ ...value, kind: 'All' })} count={total}>
@@ -90,6 +76,14 @@ export function Filters({ value, onChange, threads, sources, kindCounts, total, 
         <div className="filter-pills">
           <Pill active={value.thread === 'All'} onClick={() => onChange({ ...value, thread: 'All' })}>
             All
+          </Pill>
+          <Pill
+            active={value.favoritesOnly}
+            onClick={() => onChange({ ...value, favoritesOnly: !value.favoritesOnly })}
+            count={favoriteCount}
+          >
+            {value.favoritesOnly ? <SavedIcon size={12} /> : <SaveIcon size={12} />}
+            My favorites
           </Pill>
           {threads.map((thread) => {
             const ThreadIcon = THREAD_ICONS[thread.toLowerCase()];
