@@ -17,6 +17,7 @@ interface EntryModalProps {
   isAdmin: boolean;
   onReport: (reason: string) => Promise<boolean>;
   onDelete: () => Promise<boolean>;
+  onClearReports: () => Promise<boolean>;
   isFavorited: boolean;
   onToggleFavorite: () => void;
 }
@@ -106,6 +107,7 @@ export function EntryModal({
   isAdmin,
   onReport,
   onDelete,
+  onClearReports,
   isFavorited,
   onToggleFavorite,
 }: EntryModalProps) {
@@ -115,6 +117,8 @@ export function EntryModal({
   const [reportError, setReportError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [clearing, setClearing] = useState(false);
+  const [clearError, setClearError] = useState('');
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -145,6 +149,16 @@ export function EntryModal({
     } else {
       setDeleting(false);
       setDeleteError('Something went wrong — please try again.');
+    }
+  };
+
+  const handleClearReports = async () => {
+    setClearing(true);
+    setClearError('');
+    const ok = await onClearReports();
+    setClearing(false);
+    if (!ok) {
+      setClearError('Something went wrong — please try again.');
     }
   };
 
@@ -246,6 +260,17 @@ export function EntryModal({
                   {entry.reportCount ? `${entry.reportCount} report(s)` : 'No reports'}
                   {entry.hidden ? ' · hidden' : ''}
                 </span>
+                {clearError && <span className="entry-modal-report-error">{clearError}</span>}
+                {Boolean(entry.reportCount) && (
+                  <button
+                    type="button"
+                    className="entry-modal-clear-reports"
+                    onClick={handleClearReports}
+                    disabled={clearing}
+                  >
+                    {clearing ? 'Clearing…' : 'Clear reports'}
+                  </button>
+                )}
                 {deleteError && <span className="entry-modal-report-error">{deleteError}</span>}
                 <button type="button" className="entry-modal-delete" onClick={handleDelete} disabled={deleting}>
                   <TrashIcon size={13} />

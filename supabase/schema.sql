@@ -190,6 +190,27 @@ $fn$;
 
 grant execute on function admin_update_thumbnail(text, uuid, text) to anon, authenticated;
 
+-- Dismisses all reports on an entry and un-hides it — only when the
+-- passcode is correct. Deletes the underlying report rows too, not just
+-- the counter, since a dismissed report shouldn't linger in the table.
+create or replace function admin_clear_reports(p_passcode text, p_entry_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $fn$
+begin
+  if not verify_admin_passcode(p_passcode) then
+    raise exception 'invalid passcode';
+  end if;
+  delete from reports where entry_id = p_entry_id;
+  update entries set report_count = 0, hidden = false where id = p_entry_id;
+  return found;
+end;
+$fn$;
+
+grant execute on function admin_clear_reports(text, uuid) to anon, authenticated;
+
 -- ---------------------------------------------------------------------
 -- Run this last, once, with your own passcode in place of the
 -- placeholder below. Re-running it changes the passcode.

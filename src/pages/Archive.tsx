@@ -19,9 +19,18 @@ interface ArchiveProps {
   reportEntry: ReturnType<typeof useEntries>['reportEntry'];
   deleteEntry: ReturnType<typeof useEntries>['deleteEntry'];
   updateThumbnail: ReturnType<typeof useEntries>['updateThumbnail'];
+  clearReports: ReturnType<typeof useEntries>['clearReports'];
 }
 
-export function Archive({ entries, loading, admin, reportEntry, deleteEntry, updateThumbnail }: ArchiveProps) {
+export function Archive({
+  entries,
+  loading,
+  admin,
+  reportEntry,
+  deleteEntry,
+  updateThumbnail,
+  clearReports,
+}: ArchiveProps) {
   const [filters, setFilters] = useState<FilterState>({
     kind: 'All',
     thread: 'All',
@@ -123,6 +132,7 @@ export function Archive({ entries, loading, admin, reportEntry, deleteEntry, upd
           isAdmin={admin.isAdmin}
           onReport={(reason) => reportEntry(openEntry.id, reason)}
           onDelete={() => deleteEntry(openEntry.id)}
+          onClearReports={() => clearReports(openEntry.id)}
           isFavorited={favorites.isFavorited(openEntry.id)}
           onToggleFavorite={() => favorites.toggleFavorite(openEntry.id)}
         />

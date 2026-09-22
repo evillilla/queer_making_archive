@@ -7,7 +7,9 @@ import { useAdminAccess } from './hooks/useAdminAccess';
 
 export default function App() {
   const admin = useAdminAccess();
-  const { entries, loading, addEntry, reportEntry, deleteEntry, updateThumbnail } = useEntries(admin.passcode);
+  const { entries, loading, addEntry, reportEntry, deleteEntry, updateThumbnail, clearReports } = useEntries(
+    admin.passcode,
+  );
 
   return (
     <HashRouter>
@@ -23,6 +25,7 @@ export default function App() {
               reportEntry={reportEntry}
               deleteEntry={deleteEntry}
               updateThumbnail={updateThumbnail}
+              clearReports={clearReports}
             />
           }
         />

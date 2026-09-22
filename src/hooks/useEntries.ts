@@ -129,5 +129,25 @@ export function useEntries(adminPasscode: string | null) {
     [adminPasscode],
   );
 
-  return { entries, loading, addEntry, reportEntry, deleteEntry, updateThumbnail };
+  const clearReports = useCallback(
+    async (entryId: string) => {
+      if (!supabase || !adminPasscode) return false;
+      try {
+        const { data, error } = await supabase.rpc('admin_clear_reports', {
+          p_passcode: adminPasscode,
+          p_entry_id: entryId,
+        });
+        if (error || !data) return false;
+        setEntries((prev) =>
+          prev.map((e) => (e.id === entryId ? { ...e, reportCount: 0, hidden: false } : e)),
+        );
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [adminPasscode],
+  );
+
+  return { entries, loading, addEntry, reportEntry, deleteEntry, updateThumbnail, clearReports };
 }
